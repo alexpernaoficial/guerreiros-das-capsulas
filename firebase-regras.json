@@ -1,0 +1,15 @@
+{
+  "rules": {
+    "salas": {
+      "$sala": {
+        "players": {
+          ".read": "auth != null",
+          "$pid": {
+            ".write": "auth != null && $pid.beginsWith(auth.uid)",
+            ".validate": "!newData.exists() || (newData.hasChild('x') && newData.child('n').isString() && newData.child('n').val().length <= 12)"
+          }
+        }
+      }
+    }
+  }
+}
