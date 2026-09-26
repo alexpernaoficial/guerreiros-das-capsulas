@@ -1295,7 +1295,9 @@ function chooseStarter(id){S.team=[makeInst(id,5)];S.caught[id]=true;S.seen[id]=
 const PHRASES=['Oi!','Vem aqui!','Olha isso!','Vamos batalhar!','Achei uma Esfera!','Me ajuda!','Muito legal!','Te amo!','Boa noite!','Tchau!'];
 let ROOM=null,PEERS=[],netOn=false,lastPres='',presT=0;const PS=new Map();
 /* Firebase: usado quando o jogo roda fora do Claude (site da família). Configuração pública do app web. */
-const FIREBASE_CONFIG=null;
+const FIREBASE_CONFIG={apiKey:"AIzaSyDlSAD57nIx06GUjXbQdSyPN4hgUrDgkko",authDomain:"guerreiros-das-capsulas.firebaseapp.com",
+  databaseURL:"https://guerreiros-das-capsulas-default-rtdb.firebaseio.com",projectId:"guerreiros-das-capsulas",
+  storageBucket:"guerreiros-das-capsulas.firebasestorage.app",messagingSenderId:"709734632142",appId:"1:709734632142:web:136b052d5e967038b1de9f"};
 const FB_VER='10.14.1';
 const SALA=(new URLSearchParams(location.search).get('sala')||'familia').replace(/[^a-z0-9_-]/gi,'').slice(0,40)||'familia';
 const NET={claude:!!(window.claude&&typeof window.claude.use==='function'),fb:false,stage:'loading',err:'',perm:'',pm:null};
