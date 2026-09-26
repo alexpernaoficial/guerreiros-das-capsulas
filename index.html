@@ -169,6 +169,24 @@ body.touch #toast{bottom:calc(214px + env(safe-area-inset-bottom,0px));}
 .starter small{font-size:15px;color:var(--muted);line-height:1.3;}
 .row-btns{display:flex;flex-direction:column;gap:6px;}
 
+/* ---------- minimap + narrow HUD ---------- */
+.mm{pointer-events:auto;display:block;width:80px;height:80px;padding:0;box-sizing:border-box;image-rendering:pixelated;background:#2c67c2;cursor:pointer;}
+.mm.big{position:fixed;left:50%;top:calc(96px + env(safe-area-inset-top,0px));transform:translateX(-50%);z-index:15;width:min(320px,86vw);height:min(320px,86vw);box-shadow:0 0 0 3px var(--deep),0 10px 0 var(--deep);}
+@media (max-width:560px){
+  #hud{padding-left:8px;padding-right:8px;gap:6px;}
+  .hud-l{flex-wrap:wrap;max-width:56%;gap:6px;}
+  .hud-l .hbox{flex-basis:100%;}
+  .kibar{width:100%;min-width:90px;box-sizing:border-box;}
+  .who{font-size:15px;}
+  .clock{font-size:14px;gap:5px;}
+  .hbox{padding:5px 7px;}
+  .dial{width:28px;height:28px;}
+  #radarArrow{left:3px;top:10px;width:20px;height:7px;}
+  .radar-txt small{font-size:12px;}
+  .net{font-size:13px;}
+  .mm{width:70px;height:70px;}
+}
+
 /* ---------- online ---------- */
 .net{pointer-events:auto;flex-direction:row;align-items:center;gap:7px;font-family:var(--body);font-size:15px;color:var(--text);padding:6px 9px;cursor:pointer;box-shadow:0 3px 0 var(--deep);}
 .net i{width:9px;height:9px;border-radius:50%;background:#56d27a;box-shadow:0 0 6px #56d27a;}
@@ -216,6 +234,7 @@ button.trow[aria-pressed="true"]{border-color:var(--gold);box-shadow:0 0 0 2px v
       <div class="radar-txt"><b id="ballCount">0/7</b><small id="radarDist">--</small></div>
     </div>
     <button class="hbox net" id="netBtn" type="button" hidden><i></i><span id="netTxt">Online</span></button>
+    <canvas class="hbox mm" id="minimap" width="160" height="160" aria-label="Mapa da ilha. Toque para aumentar."></canvas>
   </div>
 </div>
 <div id="talkPanel" hidden></div>
@@ -879,7 +898,7 @@ function updateHUD(){const pl=S.player;if(!pl)return;$('kiFill').style.width=pl.
   let best=null,bd=1e9;for(const b of left){const d=Math.hypot(b.x*T+8-pl.x,b.y*T+8-pl.y);if(d<bd){bd=d;best=b;}}
   if(best){$('radarArrow').hidden=false;$('radarArrow').style.transform='rotate('+Math.atan2(best.y*T+8-pl.y,best.x*T+8-pl.x)+'rad)';$('radarDist').textContent=Math.round(bd/T)+' passos';}
   else{$('radarArrow').hidden=true;$('radarDist').textContent='Todas!';}
-  updateOnlineUI();
+  updateOnlineUI();drawMinimap();
   const L=S.team[0];$('lead').hidden=!L;
   if(L){const u=monURL(L.sp);if($('leadImg').getAttribute('src')!==u)$('leadImg').src=u;$('leadTxt').textContent=nm(L)+' Nv '+L.lvl;
     const p=Math.max(0,L.hp)/maxHp(L);$('leadHp').style.width=(p*100)+'%';$('leadHp').className=p<.25?'low':p<.5?'mid':'';}}
@@ -1410,6 +1429,25 @@ function buildFriends(){const box=$('friendsBox');box.hidden=S.slot!=='familia';
       if(S.team.length&&myPeer()&&q.b!==1){mk('Trocar',()=>invite(p,'trade'));mk('Batalhar',()=>invite(p,'battle'));}
       r.append(bx);}
     el.append(r);}}
+
+/* ---------- minimap ---------- */
+const MM_COL=['#2456a8','#3f93e6','#ecd697','#5cb247','#3a8438','#caa46e','#8d8aa0','#7b5232','#a8703d'];
+let mmBase=null,mmSeed=null;
+function minimapBase(){if(mmBase&&mmSeed===W.seed)return mmBase;const c=document.createElement('canvas');c.width=WW;c.height=WH;const g=c.getContext('2d'),im=g.createImageData(WW,WH);
+  for(let i=0;i<WW*WH;i++){let col=MM_COL[W.tile[i]]||'#000';const o=W.obj[i];if(o===OB.BLD)col='#d6453d';else if(o===OB.TREE||o===OB.PINE||o===OB.FRUIT)col='#2d6e30';
+    const n=parseInt(col.slice(1),16);im.data[i*4]=n>>16;im.data[i*4+1]=n>>8&255;im.data[i*4+2]=n&255;im.data[i*4+3]=255;}
+  g.putImageData(im,0,0);mmBase=c;mmSeed=W.seed;return c;}
+function mmDot(g,x,y,c){g.fillStyle='#1a1426';g.fillRect(x-2,y-2,5,5);g.fillStyle=c;g.fillRect(x-1,y-1,3,3);}
+function drawMinimap(){const cv2=$('minimap');if(!W||!S.player||cv2.hidden)return;const big=cv2.classList.contains('big'),sz=big?320:160;
+  if(cv2.width!==sz){cv2.width=sz;cv2.height=sz;}const g=cv2.getContext('2d'),k=sz/WW;g.imageSmoothingEnabled=false;g.drawImage(minimapBase(),0,0,sz,sz);
+  const blink=Math.floor(S.time*3)%2===0;
+  if(S.slot==='familia')for(const p of friends()){if(!inMyWorld(p))continue;const q=p.presence;if(!Number.isFinite(q.x)||!Number.isFinite(q.y))continue;
+    const x=Math.round(q.x/T*k),y=Math.round((q.y-3)/T*k);mmDot(g,x,y,'#56d27a');
+    if(big){g.font='bold 11px "Pixelify Sans", sans-serif';g.textAlign='center';const nm_=String(q.n).slice(0,12);g.fillStyle='#1a1426';g.fillText(nm_,x+1,y-5);g.fillStyle='#ffffff';g.fillText(nm_,x,y-6);}}
+  const pl=S.player,px=S.room?S.room.wx:pl.x,py=S.room?S.room.wy:pl.y,x=Math.round(px/T*k),y=Math.round((py-3)/T*k);
+  mmDot(g,x,y,blink?'#ffffff':'#ffd83a');
+  if(big){g.font='bold 11px "Pixelify Sans", sans-serif';g.textAlign='center';g.fillStyle='#1a1426';g.fillText('Você',x+1,y-5);g.fillStyle='#ffd83a';g.fillText('Você',x,y-6);}}
+$('minimap').addEventListener('click',e=>{e.currentTarget.classList.toggle('big');e.currentTarget.blur();drawMinimap();});
 
 /* ---------- invites, trades, family battles ---------- */
 S.handled={};
