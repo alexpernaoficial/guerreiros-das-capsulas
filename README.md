@@ -24,6 +24,8 @@ O jogo foi programado com a ajuda do **Claude** (IA da Anthropic) como parceiro 
 | **Mundo da Família:** todos na mesma ilha, com nomes, balões de fala e o monstrinho líder seguindo cada um | **Batalhas por turnos** com tipos, golpes e a Onda de Ki do guerreiro |
 | ![O Dragão Sagrado](imagens/dragao.png) | ![Casa própria](imagens/casa.png) |
 | **O Dragão Sagrado** aparece quando você junta as 7 Esferas e realiza um desejo | **Casa própria** com cama, baú e bancada para construir móveis |
+| ![Ginásio de Água](imagens/ginasio.png) | ![Batalha contra a Marina](imagens/batalha-gym.png) |
+| **Ginásio de Água** na beira do rio, com peixes e estrelas nadando | **Desafio da Líder Marina** na arena de água |
 
 - 🧑‍🎤 **Crie seu guerreiro:** cabelo, cores, roupa e faixa.
 - 🌍 **Mundo aberto gerado automaticamente:** rios, lagos, florestas, montanhas, vila e **ciclo de dia e noite**.
@@ -33,7 +35,8 @@ O jogo foi programado com a ajuda do **Claude** (IA da Anthropic) como parceiro 
 - 🔄 **Troca de monstrinhos** entre os jogadores.
 - 🐉 **7 Esferas do Dragão** escondidas pela ilha, com radar e três desejos possíveis.
 - 🏠 **Casas:** a sua, para decorar, e a da Vovó Tuca, que deixa bolo todo dia.
-- 🏊 **Nado** nos rios e lagos.
+- 🏊 **Nado** nos rios e lagos, onde vivem o **Barbatino** (peixe) e a **Estrelinha** (estrela-do-rio).
+- 🏛️ **Ginásio de Água:** desafie a Líder **Marina** e ganhe a **Insígnia Gota**.
 - 🗺️ **Mapinha** mostrando onde está cada pessoa da família.
 - 🎵 **Música de fundo** composta em código, com uma trilha para o dia, a noite, as batalhas e o Dragão.
 
