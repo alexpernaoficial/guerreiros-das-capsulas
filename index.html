@@ -1332,12 +1332,12 @@ async function askRoomPermission(){if(!NET.pm)return;try{const r=await NET.pm.re
   updateOnlineUI();if(S.mode==='pause')buildFriends();}
 function netSummary(){
   if(NET.fb){if(NET.stage==='loading')return 'Conectando ao servidor da família...';if(!ROOM)return 'Offline: não consegui conectar ao servidor da família'+(NET.err?' ('+NET.err+')':'')+'. Confira a internet.';
-    if(!netOn)return 'Conectando ao servidor da família...';const n=PEERS.length;return 'Online ✓ Pessoas com o jogo aberto agora: '+n+(n===1?' (só você)':' (contando você)')+'.';}
+    if(!netOn)return 'Conectando ao servidor da família...';const n=PEERS.filter(p=>!p.sameTab).length+1;return 'Online ✓ Pessoas com o jogo aberto agora: '+n+(n===1?' (só você)':' (contando você)')+'.';}
   if(!NET.claude)return 'Offline: o jogo foi aberto fora do Claude. Abra pelo link claude.ai com a conta conectada.';
   if(NET.stage==='loading')return 'Verificando conexão online...';
   if(!ROOM)return 'Offline: a sala online não abriu neste aparelho'+(NET.err?' ('+NET.err+')':'')+'. Veja o diagnóstico no MENU do Mundo da Família.';
   if(!netOn)return 'Conectando à sala online...';
-  const n=PEERS.length;return 'Online ✓ Pessoas com o jogo aberto agora: '+n+(n===1?' (só você)':' (contando você)')+'.';}
+  const n=PEERS.filter(p=>!p.sameTab).length+1;return 'Online ✓ Pessoas com o jogo aberto agora: '+n+(n===1?' (só você)':' (contando você)')+'.';}
 const permTxt={granted:'permitido',prompt:'ainda não perguntado',denied:'recusado',unavailable:'indisponível'};
 function peerWhere(q){if(q.w===FAMILY_SEED)return 'no Mundo da Família';if(q.w&&q.w!==0)return 'em outro mundo';return q.n?'no jogo solo (precisa entrar no Mundo da Família)':'na tela inicial';}
 function buildDiag(){const el=$('netDiag');el.textContent='';
