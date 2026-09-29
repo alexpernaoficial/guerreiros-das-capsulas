@@ -35,6 +35,13 @@ O jogo foi programado com a ajuda do **Claude** (IA da Anthropic) como parceiro 
 | ![Arena do Campeão](imagens/arena.png) | ![Batalha contra o Campeão Zeno](imagens/batalha-zeno.png) |
 | **Arena do Campeão**, que só abre com as 4 insígnias | **A batalha final** contra o Campeão Zeno |
 
+| | |
+|---|---|
+| ![Voando na Nuvem](imagens/nuvem.png) | ![Pescando no rio](imagens/pesca.png) |
+| **Nuvem Voadora** para cruzar a ilha pelo céu | **Pescaria** com a vara: espere o "!" e puxe |
+| ![Tempestade na vila](imagens/chuva.png) | ![Arco-íris](imagens/arco-iris.png) |
+| **Clima:** chuva e tempestade com raios | **Arco-íris** depois da chuva |
+
 - 🧑‍🎤 **Crie seu guerreiro:** cabelo, cores, roupa e faixa.
 - 🌍 **Mundo aberto gerado automaticamente:** rios, lagos, florestas, montanhas, vila e **ciclo de dia e noite**.
 - 🍎 **Coleta e horta:** cortar árvores, quebrar pedras, colher frutas, plantar e colher cenouras.
@@ -50,8 +57,13 @@ O jogo foi programado com a ajuda do **Claude** (IA da Anthropic) como parceiro 
 - 🌬️ **Torre dos Ventos:** o **Ginásio do Ar** da Líder **Brisa** (Insígnia Pena), com o **Plumito** e a **Nuvinha** voando pela ilha.
 - 🔮 **Mentalis:** um monstrinho **lendário** do tipo Psíquico, escondido num orbe misterioso no alto da torre.
 - 👑 **Campeão da Ilha:** com as 4 insígnias, a **Arena do Campeão** abre. Vença o **Campeão Zeno** e seus 6 monstrinhos para ganhar a coroa e entrar no **Hall da Fama**.
+- ☁️ **Nuvem Voadora:** depois da primeira insígnia, a Nina dá uma nuvem para voar por cima de tudo (tecla F).
+- 🥚 **Ovos e creche:** deixe um monstrinho no ninho da Vovó. A cada dia ele sobe de nível e bota um ovo, que choca enquanto você anda.
+- 📜 **Missões dos moradores:** todo dia os vizinhos pedem uma ajuda ("!" em cima da cabeça) e dão prêmios.
+- 🌦️ **Clima:** sol, nuvens, chuva, tempestade e arco-íris. A chuva faz a horta crescer mais rápido e cada clima traz monstrinhos diferentes.
+- 🎣 **Pescaria:** compre a vara na loja, pesque na beira da água e fisgue monstrinhos aquáticos e itens.
 - 🗺️ **Mapinha** mostrando onde está cada pessoa da família.
-- 🎵 **Música de fundo** composta em código, com uma trilha para o dia, a noite, as batalhas e o Dragão.
+- 🎵 **Música de fundo** composta em código, com uma trilha para o dia, a noite, as batalhas e o Dragão, e 4 estilos para escolher (Aventura, Calma, Heroica e Festa).
 
 ## Como jogar
 
