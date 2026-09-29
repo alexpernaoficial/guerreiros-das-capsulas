@@ -395,9 +395,9 @@ function outline(c){const g=c.getContext('2d'),w=c.width,h=c.height,im=g.getImag
 function spr(key,w,h,fn,ol){let c=cache.get(key);if(!c){c=document.createElement('canvas');c.width=w;c.height=h;fn(c.getContext('2d'));if(ol)outline(c);cache.set(key,c);}return c;}
 
 /* ---------- data ---------- */
-const TL={DEEP:0,WATER:1,SAND:2,GRASS:3,FOREST:4,PATH:5,STONE:6,FARM:7,BRIDGE:8,CAVE:9,CWALL:10,CEXIT:11};
+const TL={DEEP:0,WATER:1,SAND:2,GRASS:3,FOREST:4,PATH:5,STONE:6,FARM:7,BRIDGE:8,CAVE:9,CWALL:10,CEXIT:11,ASH:12,LAVA:13,VWALL:14};
 const OB={NONE:0,TREE:1,FRUIT:2,PINE:3,BUSH:4,FLOWER:5,TALL:6,ROCK:7,STUMP:8,FENCE:9,CROP:10,LAMP:11,WELL:12,BLD:13,BALL:14,CRYSTAL:15};
-const SOLID_T=new Set([TL.DEEP,TL.WATER,TL.STONE,TL.CWALL]);
+const SOLID_T=new Set([TL.DEEP,TL.WATER,TL.STONE,TL.CWALL,TL.LAVA,TL.VWALL]);
 const SOLID_O=new Set([OB.TREE,OB.FRUIT,OB.PINE,OB.BUSH,OB.ROCK,OB.FENCE,OB.LAMP,OB.WELL,OB.BLD,OB.CRYSTAL]);
 const DIRV=[[0,1],[0,-1],[-1,0],[1,0]];
 const HAIR_STYLES=[['espetado','Espetado'],['chama','Chama'],['tigela','Tigela'],['careca','Careca'],['antenas','Antenas']];
@@ -516,6 +516,17 @@ const MV=(n,tipo,pow,l)=>({n,tipo,pow,l});
 function starPaint(g,rot,scale,c1,c2){const R=pen(g);for(let y=0;y<16;y++)for(let x=0;x<16;x++){const dx=x+.5-8,dy=y+.5-8.5,d=Math.hypot(dx,dy),a=Math.atan2(dy,dx)+Math.PI/2+rot;
   const r=(2.8+4.8*Math.pow(.5+.5*Math.cos(5*a),2.2))*scale;if(d<r)R(x,y,1,1,d>r-1.3?c2:c1);}}
 Object.assign(MONP,{
+  fagulha:g=>{const R=pen(g),o='#ff8a1e';R(12,9,3,2,'#ff5a2a');R(13,7,2,2,'#ffd23a');R(14,6,1,1,'#fff6a0');R(3,1,2,3,o);R(11,1,2,3,o);R(4,2,1,2,'#ffd27a');R(11,2,1,2,'#ffd27a');
+    R(3,4,10,6,o);R(4,10,8,4,o);R(6,8,4,2,'#ffe2b0');R(7,10,2,2,'#fff1d0');R(5,6,1,2,'#1a1a22');R(10,6,1,2,'#1a1a22');R(7,8,2,1,'#1a1a22');R(4,14,2,1,'#c0501a');R(10,14,2,1,'#c0501a');},
+  chamarada:g=>{const R=pen(g),o='#e8502a';R(0,5,3,3,'#ffd23a');R(0,4,2,1,'#fff6a0');R(1,8,2,1,'#ff8a1e');R(2,7,11,6,o);R(8,3,7,6,o);R(9,1,2,2,o);R(13,1,1,2,o);
+    R(5,4,2,5,'#ff8a1e');R(6,2,3,6,'#ffd23a');R(6,1,2,1,'#fff6a0');R(13,6,3,2,'#ffe2b0');R(12,5,1,1,'#1a1a22');R(15,6,1,1,'#1a1a22');R(4,9,6,2,'#ff7a3a');
+    R(3,13,2,3,'#b8421a');R(10,13,2,3,'#b8421a');},
+  magmito:g=>{const R=pen(g);for(let y=2;y<16;y++)for(let x=1;x<16;x++){const d=Math.hypot(x+.5-8,(y+.5-9.5)*1.1);if(d<6.4)R(x,y,1,1,d>5.2?'#2e2222':'#4a3a3a');}
+    R(4,7,1,4,'#ff8a1e');R(5,10,3,1,'#ff8a1e');R(11,8,1,3,'#ff8a1e');R(9,12,3,1,'#ff5a2a');R(6,3,4,2,'#ffb347');R(7,2,2,1,'#ffd23a');R(8,5,1,2,'#ffb347');
+    R(5,8,2,2,'#ffd23a');R(9,8,2,2,'#ffd23a');R(6,9,1,1,'#3a1a00');R(10,9,1,1,'#3a1a00');},
+  vulcanio:g=>{const R=pen(g);for(let y=3;y<16;y++){const hw=Math.round(2+(y-3)*.55);R(8-hw,y,hw*2,1,y%4===0?'#4a3434':'#5a4040');}
+    R(5,2,6,2,'#ff5a2a');R(6,0,4,2,'#ffd23a');R(7,0,1,1,'#fff6a0');R(4,4,1,5,'#ff8a1e');R(11,5,1,6,'#ff8a1e');R(7,6,1,3,'#ff5a2a');
+    R(5,8,2,2,'#ffd23a');R(9,8,2,2,'#ffd23a');R(6,12,4,1,'#1a1010');R(0,9,2,4,'#4a3434');R(14,9,2,4,'#4a3434');},
   morceguinho:g=>{const R=pen(g),b='#6a4a9a',w='#8a6ac0',m='#b89ae0';R(0,5,5,2,w);R(1,7,4,2,w);R(2,9,2,1,w);R(11,5,5,2,w);R(11,7,4,2,w);R(12,9,2,1,w);
     R(1,6,3,1,m);R(12,6,3,1,m);R(5,2,1,2,b);R(10,2,1,2,b);R(5,4,6,4,b);R(6,6,4,5,b);R(7,9,2,2,'#8a6ac0');
     R(6,5,1,1,'#ffd83a');R(9,5,1,1,'#ffd83a');R(7,8,1,1,'#fff');R(8,8,1,1,'#fff');R(7,11,1,1,'#3a2a5a');R(8,11,1,1,'#3a2a5a');},
@@ -564,7 +575,7 @@ Object.assign(MONP,{
     R(6,5,1,1,'#2a2540');R(9,5,1,1,'#2a2540');R(7,9,2,2,'#ff5a6e');R(6,10,1,1,'#ff5a6e');R(9,10,1,1,'#ff5a6e');R(12,11,3,2,'#ffd83a');R(14,10,1,1,'#fff');R(5,13,2,2,'#e0a800');R(9,13,2,2,'#e0a800');R(1,2,1,1,'#fff');R(14,1,1,1,'#fff');},
 });
 const SPECIES=[
-  {id:'brasinha',n:'Brasinha',tipo:'Fogo',hab:[TL.GRASS,TL.SAND],b:{hp:45,atk:56,def:40,spd:60},desc:'Esquentadinho e muito rápido.',
+  {id:'brasinha',n:'Brasinha',tipo:'Fogo',hab:[TL.GRASS,TL.SAND,TL.ASH],b:{hp:45,atk:56,def:40,spd:60},desc:'Esquentadinho e muito rápido.',
     moves:[MV('Arranhão','Normal',35,1),MV('Brasa','Fogo',45,1),MV('Cauda de Fogo','Fogo',65,9),MV('Explosão Solar','Fogo',90,16)]},
   {id:'gotinha',n:'Gotinha',tipo:'Água',hab:[TL.SAND,TL.GRASS],b:{hp:52,atk:46,def:50,spd:45},desc:'Calminho e bem resistente.',
     moves:[MV('Investida','Normal',35,1),MV('Jato d\'Água','Água',45,1),MV('Bolhas','Água',65,9),MV('Onda Gigante','Água',90,16)]},
@@ -603,7 +614,14 @@ SPECIES.push(
     moves:[MV('Mordidinha','Normal',35,1),MV('Asa Cortante','Voador',45,1),MV('Rasante','Voador',65,9),MV('Tornado','Voador',90,16)]},
   {id:'cristalhao',n:'Cristalhão',tipo:'Pedra',hab:[],evo:1,b:{hp:78,atk:80,def:96,spd:40},desc:'Evolução do Cristalito.'},
   {id:'morcegao',n:'Morcegão',tipo:'Voador',hab:[],evo:1,b:{hp:66,atk:78,def:56,spd:100},desc:'Evolução do Morceguinho.'});
-const EVOS={cristalito:'cristalhao',morceguinho:'morcegao',brasinha:'dragoflama',gotinha:'aquarino',folhinha:'florestao',faiscao:'trovoada',pedrinho:'rochedao',lunar:'eclipso',zapito:'zaptor',barbatino:'tubarino',estrelinha:'estrelao'};
+SPECIES.push(
+  {id:'fagulha',n:'Fagulha',tipo:'Fogo',hab:[TL.ASH],b:{hp:46,atk:60,def:42,spd:72},desc:'Filhote de raposa de fogo. Vive no vulcão.',
+    moves:[MV('Arranhão','Normal',35,1),MV('Brasa','Fogo',45,1),MV('Lança-Chamas','Fogo',70,9),MV('Erupção','Fogo',95,16)]},
+  {id:'magmito',n:'Magmito',tipo:'Fogo',hab:[TL.ASH],b:{hp:60,atk:52,def:66,spd:34},desc:'Bolinha de magma que borbulha.',
+    moves:[MV('Investida','Normal',35,1),MV('Bolha de Magma','Fogo',45,1),MV('Rocha Quente','Fogo',65,9),MV('Lava Explosiva','Fogo',90,16)]},
+  {id:'chamarada',n:'Chamarada',tipo:'Fogo',hab:[],evo:1,b:{hp:72,atk:88,def:60,spd:96},desc:'Evolução da Fagulha.'},
+  {id:'vulcanio',n:'Vulcânio',tipo:'Fogo',hab:[],evo:1,b:{hp:90,atk:80,def:92,spd:40},desc:'Evolução do Magmito.'});
+const EVOS={fagulha:'chamarada',magmito:'vulcanio',cristalito:'cristalhao',morceguinho:'morcegao',brasinha:'dragoflama',gotinha:'aquarino',folhinha:'florestao',faiscao:'trovoada',pedrinho:'rochedao',lunar:'eclipso',zapito:'zaptor',barbatino:'tubarino',estrelinha:'estrelao'};
 const EVO_LVL=12;
 for(const k in EVOS){const s=SPECIES.find(x=>x.id===k),e=SPECIES.find(x=>x.id===EVOS[k]);s.evolve={to:e.id,lvl:EVO_LVL};e.moves=s.moves;e.from=k;}
 const SPM={};for(const s of SPECIES)SPM[s.id]=s;
@@ -652,6 +670,10 @@ function paintTile(g,t,v,f){const r=mulberry32(t*977+v*131+7),R=pen(g);
     case TL.FARM:R(0,0,16,16,'#7b5232');for(let y=2;y<16;y+=4){R(0,y,16,1,'#5f3d23');R(0,y+1,16,1,'#8e6340');}break;
     case TL.BRIDGE:R(0,0,16,16,'#a8703d');for(let x=0;x<16;x+=4)R(x,0,1,16,'#80522a');R(0,1,16,2,'#6b4222');R(0,13,16,2,'#6b4222');break;
     case TL.WATER:R(0,0,16,16,'#3f93e6');for(let k=0;k<3;k++){const x=r()*16|0,y=r()*14|0;R((x+f*2)%16,y,4,1,'#79bdf7');}break;
+    case TL.ASH:R(0,0,16,16,'#3e3438');sp(7,1,1,'#4e4448');sp(5,2,1,'#2e2628');if(v===1)R(r()*14|0,r()*14|0,1,1,'#ff6a2a');break;
+    case TL.VWALL:R(0,0,16,16,'#2a1c1c');sp(6,2,1,'#342222');sp(4,1,2,'#1e1414');R(0,0,16,1,'#4a2a24');break;
+    case TL.LAVA:{R(0,0,16,16,'#c8401a');for(let k=0;k<4;k++){const x=r()*14|0,y=r()*14|0;R((x+f)%14,y,3,2,'#ff8a1e');}
+      for(let k=0;k<2;k++){const x=r()*14|0,y=r()*14|0;R((x+f*2)%15,y,2,1,'#ffd23a');}sp(2,2,1,'#7a2a14');break;}
     case TL.CAVE:R(0,0,16,16,'#4e4658');sp(7,1,1,'#5e5668');sp(5,2,1,'#3e3648');sp(2,1,1,'#6e6680');break;
     case TL.CWALL:R(0,0,16,16,'#2a2434');sp(6,2,1,'#342d40');sp(4,1,2,'#211c2a');R(0,0,16,1,'#3a3246');break;
     case TL.CEXIT:R(0,0,16,16,'#4e4658');R(2,0,12,16,'#9a8a6e');for(let y=2;y<16;y+=4)R(2,y,12,1,'#7a6a58');R(2,0,12,2,'#e8d8a0');break;
@@ -665,13 +687,18 @@ const ROOMDEF={
   vovo:{name:'Casa da Vovó Tuca',w:10,h:8,wall:'#cdb8ec',wall2:'#bca4e0',trim:'#6b4a9a',floor:'#c99a5e',floor2:'#b0844c'},
   ginasio:{name:'Ginásio de Água',w:12,h:10,wall:'#bfe6ff',wall2:'#a8d8f8',trim:'#2456a8',floor:'#e4f2ff',floor2:'#c8e0f5',tiles:1,door:[5,6],windows:[2,9],pool:[3,4,8,6]},
   ginasio2:{name:'Ginásio de Pedra',w:12,h:10,wall:'#6a6478',wall2:'#5a5468',trim:'#3a3448',floor:'#8a7a64',floor2:'#7a6a56',tiles:1,door:[5,6],windows:[],pool:[3,4,8,6],pit:1},
+  ginasio3:{name:'Ginásio de Fogo',w:12,h:10,wall:'#5a2a24',wall2:'#4a2420',trim:'#2a1210',floor:'#3a3036',floor2:'#2e262c',tiles:1,door:[5,6],windows:[],pool:[3,4,8,6],lava:1},
 };
 const GYM={id:'agua',de:'da',art:'a',name:'Marina',title:'Líder do Ginásio de Água',badge:'Insígnia Gota',look:{hair:'chama',hc:5,skin:0,gi:1,belt:4},
   team:[['estrelinha',11],['barbatino',12],['estrelao',15]]};
 const GYM2={id:'pedra',de:'do',art:'o',name:'Rocco',title:'Líder do Ginásio de Pedra',badge:'Insígnia Rocha',look:{hair:'espetado',hc:3,skin:2,gi:4,belt:1},
   team:[['cristalito',15],['morcegao',17],['rochedao',19]],
   intro:'Eu sou o Rocco! Aqui no fundo da caverna, meus monstrinhos são duros como rocha. Vença os 3 e ganhe a Insígnia Rocha! Dica: Água e Planta vencem Pedra, e Raio e Pedra vencem os morcegos Voadores!'};
-const GYMS=[GYM,GYM2];
+const GYM3={id:'fogo',de:'da',art:'a',name:'Lara',title:'Líder do Ginásio de Fogo',badge:'Insígnia Chama',look:{hair:'tigela',hc:5,skin:1,gi:3,belt:2},
+  team:[['magmito',20],['chamarada',22],['dragoflama',24]],
+  intro:'Eu sou a Lara! Aqui no coração do vulcão, meus monstrinhos queimam de energia! Vença os 3 e ganhe a Insígnia Chama. Dica: Água e Pedra vencem Fogo!'};
+const GYMS=[GYM,GYM2,GYM3];
+const GYM3_FURN=[{k:'lider3',x:5,y:2},{k:'trofeu',x:2,y:2},{k:'trofeu',x:9,y:2},{k:'fogueira',x:1,y:4},{k:'fogueira',x:10,y:4},{k:'fogueira',x:1,y:8},{k:'fogueira',x:10,y:8}];
 const GYM2_FURN=[{k:'lider2',x:5,y:2},{k:'trofeu',x:2,y:2},{k:'trofeu',x:9,y:2},{k:'cristal',x:1,y:4},{k:'cristal',x:10,y:4},{k:'cristal',x:1,y:8},{k:'cristal',x:10,y:8}];
 const GYM_FURN=[{k:'lider',x:5,y:2},{k:'trofeu',x:2,y:2},{k:'trofeu',x:9,y:2},{k:'boia',x:1,y:4},{k:'boia',x:10,y:4},{k:'vaso',x:1,y:8},{k:'vaso',x:10,y:8}];
 const FURN={
@@ -679,7 +706,7 @@ const FURN={
   mesa:{n:'Mesa',cost:{madeira:3}},cadeira:{n:'Cadeira',cost:{madeira:2}},poltrona:{n:'Poltrona',cost:{madeira:2,flor:1}},
   estante:{n:'Estante',cost:{madeira:4}},vaso:{n:'Vaso de flor',cost:{pedra:1,flor:1}},tapete:{n:'Tapete',cost:{flor:2},walk:true},
   abajur:{n:'Abajur',cost:{madeira:1,pedra:1}},estatua:{n:'Estátua do líder',cost:{pedra:4}},
-  lider:{n:'Marina'},lider2:{n:'Rocco'},cristal:{n:'Cristal'},trofeu:{n:'Troféu'},boia:{n:'Boia'},
+  lider:{n:'Marina'},lider2:{n:'Rocco'},lider3:{n:'Lara'},fogueira:{n:'Fogueira'},cristal:{n:'Cristal'},trofeu:{n:'Troféu'},boia:{n:'Boia'},
 };
 const CRAFT=['mesa','cadeira','poltrona','estante','vaso','tapete','abajur','estatua'];
 const DEFAULT_HOME=()=>[{k:'cama',x:1,y:2,fixed:1},{k:'bancada',x:7,y:2,fixed:1},{k:'bau',x:8,y:2,fixed:1},{k:'tapete',x:4,y:4}];
@@ -700,6 +727,8 @@ const FURNP={
   estatua:[16,16,g=>{const R=pen(g);R(2,11,12,4,'#8d879c');R(2,11,12,1,'#b5b0c4');R(4,3,8,8,'#a8a3b8');}],
   lider:[16,20,g=>g.drawImage(heroSpr(GYM.look,0,0),1,1),false],
   lider2:[16,20,g=>g.drawImage(heroSpr(GYM2.look,0,0),1,1),false],
+  lider3:[16,20,g=>g.drawImage(heroSpr(GYM3.look,0,0),1,1),false],
+  fogueira:[16,16,g=>{const R=pen(g);R(3,11,10,4,'#6a6478');R(2,10,12,2,'#8d879c');R(5,4,6,7,'#ff5a2a');R(6,2,4,5,'#ff8a1e');R(7,0,2,4,'#ffd23a');R(7,6,2,4,'#ffd23a');}],
   cristal:[16,24,g=>OBJP.cristal[2](g),true],
   trofeu:[16,16,g=>{const R=pen(g);R(5,11,6,3,'#8d879c');R(4,13,8,2,'#6a6478');R(7,9,2,2,'#e0a800');R(5,3,6,6,'#ffd83a');R(3,4,2,3,'#ffd83a');R(11,4,2,3,'#ffd83a');R(6,4,1,3,'#fff1b0');R(8,4,2,3,'#4aa8ff');}],
   boia:[16,16,g=>{const R=pen(g);for(let y=0;y<16;y++)for(let x=0;x<16;x++){const dx=x+.5-8,dy=y+.5-8,d=Math.hypot(dx,dy);
@@ -787,7 +816,7 @@ function genWorld(seed){
     if(t===TL.GRASS){if(q<.03)obj[i]=OB.TREE;else if(q<.04){obj[i]=OB.FRUIT;data[i]=1;}else if(q<.052){obj[i]=OB.BUSH;data[i]=1;}else if(q<.058)obj[i]=OB.ROCK;else if(q<.1){obj[i]=OB.FLOWER;data[i]=(q*1000|0)%4;}else if(tall&&q<.75)obj[i]=OB.TALL;}
     else if(t===TL.FOREST){if(q<.2)obj[i]=OB.PINE;else if(q<.26)obj[i]=OB.TREE;else if(q<.29){obj[i]=OB.FRUIT;data[i]=1;}else if(q<.33){obj[i]=OB.BUSH;data[i]=1;}else if(q<.35)obj[i]=OB.ROCK;else if(tall&&q<.8)obj[i]=OB.TALL;}
     else if(t===TL.SAND){if(q<.02)obj[i]=OB.ROCK;}}
-  stampGym({tile,obj,data,blds,riverX,balls:[]});stampCave({tile,obj,data,blds,riverX,balls:[]});
+  stampGym({tile,obj,data,blds,riverX,balls:[]});stampCave({tile,obj,data,blds,riverX,balls:[]});stampVolcano({tile,obj,data,blds,riverX,balls:[]});
   // esferas
   const balls=[];let tries=0;
   while(balls.length<7&&tries<8000){tries++;const x=6+(r()*(WW-12)|0),y=6+(r()*(WH-12)|0),i=idx(x,y),t=tile[i];
@@ -834,12 +863,53 @@ function genCave(seed){const tile=new Uint8Array(WW*WH).fill(TL.CWALL),obj=new U
     if(v<.035){obj[i]=OB.CRYSTAL;crystals.push([x,y]);}else if(v<.08)obj[i]=OB.ROCK;}
   const blds=[{x:78,y:46,w:5,h:4,kind:'ginasio2'}];for(let y=46;y<50;y++)for(let x=78;x<83;x++)obj[idx(x,y)]=OB.BLD;
   return {seed:seed+1,base:seed,cave:1,tile,obj,data,blds,balls:[],lamps:[],crystals,exit:[80,116],riverX:[]};}
-function getCave(){if(!CAVE||CAVE.base!==WORLD.seed)CAVE=genCave(WORLD.seed);return CAVE;}
-function enterCave(b){S.cave={wx:(b.x+1)*T+8,wy:(b.y+b.h)*T+12};WORLD=W;W=getCave();const pl=S.player;pl.x=80*T+8;pl.y=113*T+12;pl.dir=1;pl.swim=false;
+const AREAS={};
+function getArea(kind){const a=AREAS[kind];if(!a||a.base!==WORLD.seed)AREAS[kind]=kind==='vulcao'?genVolcano(WORLD.seed):genCave(WORLD.seed);return AREAS[kind];}
+function enterCave(b,kind){kind=kind||'caverna';S.cave={kind,wx:(b.x+1)*T+8,wy:(b.y+b.h)*T+12};WORLD=W;W=getArea(kind);const pl=S.player;pl.x=80*T+8;pl.y=113*T+12;pl.dir=1;pl.swim=false;
   S.mons=[];S.parts=[];S.flies=[];S.pet.px=pl.x;S.pet.py=pl.y+2;S.fade=.9;S.battleCD=2;sfx('talk');
-  say('Caverna das Pedras! Está escuro... cuidado com os morcegos. O Ginásio de Pedra fica lá no fundo.',5);}
+  say(kind==='vulcao'?'Vulcão! Que calor! Não encoste na lava. O Ginásio de Fogo fica lá em cima, na cratera.':'Caverna das Pedras! Está escuro... cuidado com os morcegos. O Ginásio de Pedra fica lá no fundo.',5);}
 function exitCave(){const c=S.cave;W=WORLD;S.cave=null;const pl=S.player;pl.x=c.wx;pl.y=c.wy;pl.dir=0;S.mons=[];S.parts=[];S.pet.px=pl.x;S.pet.py=pl.y+2;
   S.fade=.9;S.battleCD=2;sfx('talk');say('De volta à luz do dia!');save();}
+function genVolcano(seed){const tile=new Uint8Array(WW*WH).fill(TL.VWALL),obj=new Uint8Array(WW*WH),data=new Uint8Array(WW*WH),r=mulberry32(seed*11+29);
+  const X0=48,X1=112,Y0=38,Y1=118,inR=(x,y)=>x>=X0&&x<=X1&&y>=Y0&&y<=Y1;let m=new Uint8Array(WW*WH).fill(1);
+  for(let y=Y0;y<=Y1;y++)for(let x=X0;x<=X1;x++)m[idx(x,y)]=r()<.42?1:0;
+  for(let it=0;it<5;it++){const n=new Uint8Array(m);for(let y=Y0;y<=Y1;y++)for(let x=X0;x<=X1;x++){let c=0;
+    for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++)c+=inR(x+dx,y+dy)?m[idx(x+dx,y+dy)]:1;n[idx(x,y)]=c>=5?1:0;}m=n;}
+  const ph=r()*6.28,path=new Set(),carve=(x,y)=>{m[idx(x,y)]=0;path.add(idx(x,y));};
+  for(let y=113;y>=50;y--){const cx=Math.round(80+Math.sin(y*.11+ph)*11);for(let dx=-1;dx<=1;dx++)carve(cx+dx,y);}
+  for(let y=44;y<=58;y++)for(let x=72;x<=88;x++)carve(x,y);
+  for(let y=108;y<=115;y++)for(let x=76;x<=84;x++)carve(x,y);
+  for(let y=Y0;y<=Y1;y++)for(let x=X0;x<=X1;x++){const i=idx(x,y);tile[i]=m[i]?TL.VWALL:(!path.has(i)&&fbm(x/7,y/7,seed+5)>.58?TL.LAVA:TL.ASH);}
+  for(let y=Y0;y<=Y1;y++)for(let x=X0;x<=X1;x++){const i=idx(x,y);if(path.has(i)){for(const [dx,dy] of DIRV){const j=idx(x+dx,y+dy);if(tile[j]===TL.LAVA)tile[j]=TL.ASH;}}}
+  const seen=new Uint8Array(WW*WH),q=[idx(80,112)];seen[q[0]]=1;
+  while(q.length){const i=q.pop(),x=i%WW,y=(i/WW)|0;for(const [dx,dy] of DIRV){const j=idx(x+dx,y+dy);if(!seen[j]&&tile[j]===TL.ASH){seen[j]=1;q.push(j);}}}
+  for(let i=0;i<tile.length;i++)if(tile[i]===TL.ASH&&!seen[i])tile[i]=TL.VWALL;
+  for(let x=79;x<=81;x++)tile[idx(x,116)]=TL.CEXIT;
+  for(let y=Y0;y<=Y1;y++)for(let x=X0;x<=X1;x++){const i=idx(x,y);if(tile[i]!==TL.ASH||path.has(i))continue;if(r()<.05)obj[i]=OB.ROCK;}
+  const blds=[{x:78,y:46,w:5,h:4,kind:'ginasio3'}];for(let y=46;y<50;y++)for(let x=78;x<83;x++)obj[idx(x,y)]=OB.BLD;
+  return {seed:seed+2,base:seed,cave:1,volcano:1,tile,obj,data,blds,balls:[],lamps:[],exit:[80,116],riverX:[]};}
+function stampVolcano(w){const step=w.riverX[80]>80?1:-1,vx=80-step*6,cy=40;
+  const put=(x,y,t)=>{const i=idx(x,y);if(w.obj[i]===OB.BALL){const b=w.balls.find(b=>b.x===x&&b.y===y);w.obj[i]=OB.NONE;if(b)relocateBall(w,b);}w.obj[i]=OB.NONE;if(t!=null)w.tile[i]=t;};
+  for(let y=cy-10;y<=cy+3;y++){const hw=y<=cy+1?Math.round(1+(y-(cy-10))*.75):9;for(let x=vx-9;x<=vx+9;x++)put(x,y,y<=cy+1&&Math.abs(x-vx)<=hw?((y<=cy-9&&Math.abs(x-vx)<=1)?TL.LAVA:TL.VWALL):TL.GRASS);}
+  for(const [sx,y0,y1] of [[-3,cy-7,cy-3],[4,cy-6,cy-1],[-6,cy-3,cy+1]])for(let y=y0;y<=y1;y++){const x=vx+sx+(y%2?0:(sx>0?1:-1));if(w.tile[idx(x,y)]===TL.VWALL)w.tile[idx(x,y)]=TL.LAVA;}
+  for(let y=cy+2;y<=66;y++)put(vx,y,w.tile[idx(vx,y)]<=TL.WATER?TL.BRIDGE:TL.PATH);
+  for(let x=vx;x!==80;x+=(80>vx?1:-1))put(x,66,TL.PATH);put(80,66,TL.PATH);
+  for(let y=cy;y<cy+2;y++)for(let x=vx-1;x<=vx+1;x++)w.obj[idx(x,y)]=OB.BLD;
+  if(!w.blds.some(b=>b.kind==='vulcao'))w.blds.push({x:vx-1,y:cy,w:3,h:2,kind:'vulcao'});}
+function volcSpr(){return spr('volcmouth',48,44,g=>{const R=pen(g);
+  for(let y=0;y<44;y++){const half=Math.round(Math.min(24,6+y*.95));R(24-half,y,half*2,1,y%5===4?'#3a2420':'#4a2e28');}
+  R(20,0,8,3,'#ff5a2a');R(22,0,4,2,'#ffd23a');R(8,12,2,8,'#ff5a2a');R(38,16,2,8,'#ff5a2a');
+  for(let y=16;y<44;y++){const half=Math.round(Math.min(11,Math.sqrt(Math.max(0,(y-15)*9))));R(24-half,y,half*2,1,y>34?'#ff6a2a':y>26?'#c8401a':'#5a1a10');}
+  for(const x of [15,19,24,29,32])R(x,17+(x%3),2,3,'#4a2e28');
+  R(6,26,2,14,'#2a1c1c');R(40,26,2,14,'#2a1c1c');R(5,22,4,4,'#ff5a2a');R(39,22,4,4,'#ff5a2a');R(6,20,2,2,'#ffd23a');R(40,20,2,2,'#ffd23a');},true);}
+function gym3Spr(){return spr('gym3',80,76,g=>{const R=pen(g);
+  R(2,30,76,45,'#3a3036');for(let y=32;y<74;y+=6)for(let x=(y/6%2)*6+2;x<76;x+=12)R(x,y,11,5,'#453a40');
+  R(2,30,76,2,'#1a1014');R(2,73,76,2,'#1a1014');R(2,30,2,45,'#1a1014');R(76,30,2,45,'#1a1014');
+  R(22,33,5,42,'#5a2a24');R(53,33,5,42,'#5a2a24');R(31,50,18,25,'#1a1014');R(33,52,14,23,'#ff6a2a');R(35,60,10,15,'#ffb347');
+  for(let y=0;y<29;y++){const half=Math.round(16+y*.85);R(40-half,y+2,half*2,1,y%6===5?'#2a1210':'#5a2a24');}
+  R(0,30,80,3,'#1a1014');
+  for(let y=5;y<28;y++)for(let x=30;x<51;x++){const dx=x+.5-40,dy=y+.5-17;if(Math.hypot(dx*1.3,dy)<9-(dy<0?dy*.25:0))R(x,y,1,1,Math.hypot(dx,dy)<5?'#ffd23a':'#ff5a2a');}
+  R(8,38,4,10,'#2a1c1c');R(68,38,4,10,'#2a1c1c');R(7,33,6,5,'#ff5a2a');R(67,33,6,5,'#ff5a2a');R(8,31,4,2,'#ffd23a');R(68,31,4,2,'#ffd23a');},true);}
 function caveSpr(){return spr('cavemouth',48,44,g=>{const R=pen(g);
   for(let y=0;y<44;y++){const half=Math.round(Math.min(24,8+y*.9));R(24-half,y,half*2,1,y%5===4?'#6d6a7c':'#8a8698');}
   R(4,6,10,3,'#a8a4b8');R(28,10,12,3,'#a8a4b8');R(16,2,8,2,'#a8a4b8');
@@ -868,7 +938,7 @@ function gymSpr(){return spr('gym',80,76,g=>{const R=pen(g);
   for(let y=14;y<24;y++)for(let x=34;x<47;x++)if(Math.hypot(x+.5-40,y+.5-18.5)<4.6)R(x,y,1,1,'#2f7fe0');
   R(38,16,1,3,'#9fdcff');
 },true);}
-function roomFurn(){return !S.room?[]:S.room.kind==='casa'?S.furn:S.room.kind==='ginasio'?GYM_FURN:S.room.kind==='ginasio2'?GYM2_FURN:VOVO_FURN;}
+function roomFurn(){return !S.room?[]:S.room.kind==='casa'?S.furn:S.room.kind==='ginasio'?GYM_FURN:S.room.kind==='ginasio2'?GYM2_FURN:S.room.kind==='ginasio3'?GYM3_FURN:VOVO_FURN;}
 function furnAt(tx,ty){return roomFurn().find(f=>{const d=FURN[f.k];return tx>=f.x&&tx<f.x+1&&ty>=f.y&&ty<f.y+(d.h||1);});}
 const inPool=(R,tx,ty)=>R.pool&&tx>=R.pool[0]&&tx<=R.pool[2]&&ty>=R.pool[1]&&ty<=R.pool[3];
 function roomSolid(tx,ty){const R=ROOMDEF[S.room.kind],dr=R.door||[4,5];if(tx<1||tx>R.w-2||ty<2||ty>R.h-1)return true;
@@ -886,12 +956,12 @@ const keys={};let touchRun=false;const joy={id:null,x:0,y:0,cx:0,cy:0};
 function makeNPCs(){return [
   {name:'Vovó Tuca',look:{hair:'tigela',hc:4,skin:1,gi:5,belt:2},x:78*T+8,y:79*T+12,dir:0,tm:1,lines:['Sua casa é a de telhado vermelho, com a estrela na porta! Lá dentro tem cama, baú e bancada para fazer móveis.','Minha casa é a de telhado roxo. Passe lá todo dia para pegar um pedaço de bolo!','Olá, guerreiro! A Loja de telhado azul troca madeira e pedra por Cápsulas.','Deixe o monstrinho selvagem fraquinho antes de jogar a Cápsula. Assim é mais fácil pegar!','A Onda de Ki do seu guerreiro nunca derruba o monstrinho. É perfeita para deixar ele fraquinho!','Quando escurece, aparece o Lunar. Ele só sai de noite!']},
   {name:'Seu Bento',look:{hair:'careca',hc:0,skin:2,gi:4,belt:1},x:80*T+8,y:87*T+12,dir:0,tm:2,lines:['Sabia que dá para nadar no rio e nos lagos? É só entrar na água!','No rio vivem o Barbatino, um peixinho veloz, e a Estrelinha, bem rara. Nade até eles para batalhar!','Essa horta é de todo mundo! Plante sementes na terra marrom.','Corte o mato alto para achar sementes.','Quando a cenoura aparece laranjinha, pode colher!']},
-  {name:'Nina',look:{hair:'chama',hc:5,skin:0,gi:3,belt:4},x:83*T+8,y:81*T+12,dir:0,tm:1.5,lines:['Do outro lado da vila tem a Caverna das Pedras! Lá dentro é escuro, tem morcegos e o Ginásio de Pedra do Rocco.','Tem um Ginásio de Água na beira do rio! A Líder Marina é fortíssima. Leve monstrinhos de Planta ou Raio!','Seus monstrinhos se machucaram? O Centro de Cura de telhado rosa cuida deles de graça!','Fogo vence Planta, Água vence Fogo, Planta vence Água. Raio é forte contra Água, e Pedra contra Fogo e Raio!','Quanto mais longe da vila, mais fortes são os monstrinhos.','Dizem que 7 Esferas do Dragão estão escondidas nesta ilha!','Quem juntar as 7 chama o Dragão Sagrado, e ele realiza um desejo!','Monstrinhos que treinam bastante evoluem no Nível 12!','Vi um ratinho elétrico amarelo no mato alto. Dizem que é raro!','O radar lá em cima aponta para a Esfera mais perto. À noite elas brilham!']},
+  {name:'Nina',look:{hair:'chama',hc:5,skin:0,gi:3,belt:4},x:83*T+8,y:81*T+12,dir:0,tm:1.5,lines:['Ao norte da vila tem um vulcão de verdade! Lá dentro vivem a Fagulha e o Magmito, e a Lara comanda o Ginásio de Fogo.','Do outro lado da vila tem a Caverna das Pedras! Lá dentro é escuro, tem morcegos e o Ginásio de Pedra do Rocco.','Tem um Ginásio de Água na beira do rio! A Líder Marina é fortíssima. Leve monstrinhos de Planta ou Raio!','Seus monstrinhos se machucaram? O Centro de Cura de telhado rosa cuida deles de graça!','Fogo vence Planta, Água vence Fogo, Planta vence Água. Raio é forte contra Água, e Pedra contra Fogo e Raio!','Quanto mais longe da vila, mais fortes são os monstrinhos.','Dizem que 7 Esferas do Dragão estão escondidas nesta ilha!','Quem juntar as 7 chama o Dragão Sagrado, e ele realiza um desejo!','Monstrinhos que treinam bastante evoluem no Nível 12!','Vi um ratinho elétrico amarelo no mato alto. Dizem que é raro!','O radar lá em cima aponta para a Esfera mais perto. À noite elas brilham!']},
 ];}
 function newPlayer(x,y){return {x,y,dir:0,step:0,anim:0,moving:false,running:false,ki:100,punch:0,look:S.look};}
 const heroLook=()=>S.gold?Object.assign({},S.look,{hc:1}):S.look;
 const clockMin=()=>(S.t*1440+360)%1440;
-function darkness(){if(S.cave)return .84;const m=clockMin();if(m>=420&&m<1050)return 0;if(m>=1050&&m<1170)return (m-1050)/120*.62;if(m>=300&&m<420)return (1-(m-300)/120)*.62;return .62;}
+function darkness(){if(S.cave)return S.cave.kind==='vulcao'?.42:.84;const m=clockMin();if(m>=420&&m<1050)return 0;if(m>=1050&&m<1170)return (m-1050)/120*.62;if(m>=300&&m<420)return (1-(m-300)/120)*.62;return .62;}
 const isNight=()=>darkness()>.4;
 
 /* ---------- sound ---------- */
@@ -959,8 +1029,9 @@ function act(){const pl=S.player;if(!pl)return;if(S.room)return actRoom();pl.pun
     case OB.FENCE:return;
     case OB.BLD:{const b=W.blds.find(b=>tx>=b.x&&tx<b.x+b.w&&ty>=b.y&&ty<b.y+b.h);const k=b?b.kind:'casa';
       if(k==='loja')return openShop();
-      if(k==='casa'||k==='vovo'||k==='ginasio'||k==='ginasio2')return enterRoom(k,b);
-      if(k==='caverna')return enterCave(b);
+      if(k==='casa'||k==='vovo'||k==='ginasio'||k==='ginasio2'||k==='ginasio3')return enterRoom(k,b);
+      if(k==='caverna')return enterCave(b,'caverna');
+      if(k==='vulcao')return enterCave(b,'vulcao');
       if(k==='cura'){if(!S.team.length){say('Centro de Cura: aqui os monstrinhos descansam e se curam.');return;}
         for(const t of S.team)t.hp=maxHp(t);burst(pl.x,pl.y-12,['#ff5a8a','#ffffff','#ffb0c8'],16,true);sfx('day');updateHUD();save();
         say('Centro de Cura: seus monstrinhos estão 100% de novo!',3.5);return;}
@@ -1012,7 +1083,7 @@ function spawnTick(){const pl=S.player,night=isNight(),max=S.cave?8:night?14:18;
     const t=W.tile[idx(tx,ty)],water=t===TL.WATER||t===TL.DEEP;if(water?W.obj[idx(tx,ty)]:solidAt(tx,ty))continue;
     let pool=SPECIES.filter(s=>s.hab.includes(t)&&(!s.night||night)&&(!s.rare||Math.random()<s.rare));if(!pool.length)continue;
     let sp=pool[Math.random()*pool.length|0];if(!water&&!S.cave&&night&&Math.random()<.4)sp=SPECIES[5];
-    S.mons.push({sp,lvl:S.cave?9+(Math.random()*5|0):wildLevel(tx,ty)+(sp.night?2:0),x:tx*T+8,y:ty*T+12,vx:0,vy:0,tm:Math.random()*2,hop:Math.random()*6,face:1,moving:false});return;}}
+    S.mons.push({sp,lvl:S.cave?(S.cave.kind==='vulcao'?16:9)+(Math.random()*5|0):wildLevel(tx,ty)+(sp.night?2:0),x:tx*T+8,y:ty*T+12,vx:0,vy:0,tm:Math.random()*2,hop:Math.random()*6,face:1,moving:false});return;}}
 function growTick(){const pl=S.player;
   for(let i=0;i<W.obj.length;i++){const o=W.obj[i];
     if(o===OB.CROP&&W.data[i]<4&&Math.random()<.6)W.data[i]++;
@@ -1035,7 +1106,7 @@ function updateHUD(){const pl=S.player;if(!pl)return;$('kiFill').style.width=pl.
   $('clockTxt').textContent='Dia '+S.day+' · '+hh+':'+mm;$('skyIcon').className=isNight()?'moon':'';
   const MW=mainW(),left=MW.balls.filter(b=>!b.got);$('ballCount').textContent=(7-left.length)+'/7';
   let best=null,bd=1e9;for(const b of left){const d=Math.hypot(b.x*T+8-pl.x,b.y*T+8-pl.y);if(d<bd){bd=d;best=b;}}
-  if(S.cave){$('radarArrow').hidden=true;$('radarDist').textContent='Na caverna';}
+  if(S.cave){$('radarArrow').hidden=true;$('radarDist').textContent=S.cave.kind==='vulcao'?'No vulcão':'Na caverna';}
   else if(best){$('radarArrow').hidden=false;$('radarArrow').style.transform='rotate('+Math.atan2(best.y*T+8-pl.y,best.x*T+8-pl.x)+'rad)';$('radarDist').textContent=Math.round(bd/T)+' passos';}
   else{$('radarArrow').hidden=true;$('radarDist').textContent='Todas!';}
   updateOnlineUI();drawMinimap();
@@ -1095,9 +1166,10 @@ function render(){
   const x0=Math.max(0,Math.floor(cx/T)),y0=Math.max(0,Math.floor(cy/T)),x1=Math.min(WW-1,Math.floor((cx+VW)/T)),y1=Math.min(WH-1,Math.floor((cy+VH)/T));
   const wf=Math.floor(S.time*2)%4;
   for(let ty=y0;ty<=y1;ty++)for(let tx=x0;tx<=x1;tx++){const t=W.tile[idx(tx,ty)],sx=tx*T-cx,sy=ty*T-cy;
-    ctx.drawImage(tileSpr(t,(hash2(tx,ty,3)*4)|0,t<=TL.WATER?wf:0),sx,sy);
+    ctx.drawImage(tileSpr(t,(hash2(tx,ty,3)*4)|0,(t<=TL.WATER||t===TL.LAVA)?wf:0),sx,sy);
     if(t<=TL.WATER){const up=ty>0?W.tile[idx(tx,ty-1)]:t;if(up>TL.WATER&&up!==TL.BRIDGE){ctx.fillStyle='rgba(225,245,255,.75)';ctx.fillRect(sx,sy,16,2);}
       const lf=tx>0?W.tile[idx(tx-1,ty)]:t,rt=tx<WW-1?W.tile[idx(tx+1,ty)]:t;ctx.fillStyle='rgba(225,245,255,.5)';if(lf>TL.WATER&&lf!==TL.BRIDGE)ctx.fillRect(sx,sy,1,16);if(rt>TL.WATER&&rt!==TL.BRIDGE)ctx.fillRect(sx+15,sy,1,16);}
+    else if(t===TL.VWALL&&ty<WH-1&&W.tile[idx(tx,ty+1)]!==TL.VWALL){ctx.fillStyle='#1a1010';ctx.fillRect(sx,sy+9,16,7);ctx.fillStyle='#100a0a';ctx.fillRect(sx,sy+15,16,1);ctx.fillRect(sx+4,sy+10,1,4);ctx.fillStyle='#5a2a1a';ctx.fillRect(sx+9,sy+12,2,1);}
     else if(t===TL.CWALL&&ty<WH-1&&W.tile[idx(tx,ty+1)]!==TL.CWALL){ctx.fillStyle='#1c1826';ctx.fillRect(sx,sy+9,16,7);ctx.fillStyle='#14111c';ctx.fillRect(sx,sy+15,16,1);ctx.fillRect(sx+3,sy+10,1,4);ctx.fillRect(sx+10,sy+11,1,3);ctx.fillStyle='#3a3246';ctx.fillRect(sx+6,sy+14,2,2);}
     else if(t===TL.STONE&&ty<WH-1&&W.tile[idx(tx,ty+1)]!==TL.STONE){ctx.fillStyle='#5d5a6e';ctx.fillRect(sx,sy+10,16,6);ctx.fillStyle='#4a4758';ctx.fillRect(sx,sy+15,16,1);ctx.fillRect(sx+4,sy+11,1,3);ctx.fillRect(sx+11,sy+12,1,3);}}
   const rows=new Map(),addE=(e,k)=>{const r=Math.floor((e.y-1)/T);if(!rows.has(r))rows.set(r,[]);rows.get(r).push([e,k]);};
@@ -1106,7 +1178,7 @@ function render(){
     for(const [e,k] of peerEnts())addE(e,k);}
   for(let ty=y0;ty<=Math.min(WH-1,y1+4);ty++){
     if(ty<=y1+2)for(let tx=x0;tx<=x1;tx++){const o=W.obj[idx(tx,ty)];if(o&&o!==OB.BLD)drawObj(o,tx,ty,cx,cy);}
-    for(const b of W.blds)if(b.y+b.h-1===ty)ctx.drawImage(b.kind==='ginasio'?gymSpr():b.kind==='ginasio2'?gym2Spr():b.kind==='caverna'?caveSpr():bldSpr(b,S.dk>.15),b.x*T-cx,b.y*T-12-cy);
+    for(const b of W.blds)if(b.y+b.h-1===ty)ctx.drawImage(b.kind==='ginasio'?gymSpr():b.kind==='ginasio2'?gym2Spr():b.kind==='caverna'?caveSpr():b.kind==='vulcao'?volcSpr():b.kind==='ginasio3'?gym3Spr():bldSpr(b,S.dk>.15),b.x*T-cx,b.y*T-12-cy);
     const list=rows.get(ty);if(list){list.sort((a,b)=>a[0].y-b[0].y);for(const [e,k] of list)drawEnt(e,k,cx,cy);}}
   ctx.font='8px "Press Start 2P", monospace';ctx.textAlign='center';
   for(const p of S.parts){ctx.globalAlpha=Math.min(1,p.life*3);const x=Math.round(p.x-cx),y=Math.round(p.y-cy);
@@ -1114,6 +1186,7 @@ function render(){
   ctx.globalAlpha=1;
   // pôr do sol / amanhecer
   const m=clockMin();let tint=0;if(m>=990&&m<1170)tint=Math.sin(Math.PI*(m-990)/180)*.2;else if(m>=330&&m<450)tint=Math.sin(Math.PI*(m-330)/120)*.14;
+  if(S.cave&&S.cave.kind==='vulcao'){ctx.fillStyle='rgba(255,70,20,.10)';ctx.fillRect(0,0,VW,VH);}
   if(tint>0&&!S.cave){ctx.fillStyle='rgba(255,110,60,'+tint+')';ctx.fillRect(0,0,VW,VH);}
   // noite
   if(S.dk>.02){lctx.globalCompositeOperation='source-over';lctx.clearRect(0,0,VW,VH);lctx.fillStyle='rgba(10,8,38,'+S.dk+')';lctx.fillRect(0,0,VW,VH);
@@ -1136,6 +1209,10 @@ function render(){
       ctx.fillStyle='rgba(255,243,154,'+(a*.3)+')';ctx.fillRect(x-1,y-1,3,3);ctx.fillStyle='rgba(255,250,200,'+a+')';ctx.fillRect(x,y,1,1);}
     S.flies=S.flies.filter(f=>f.x>cx-20&&f.x<cx+VW+20&&f.y>cy-20&&f.y<cy+VH+20);}
   else S.flies.length=0;
+  if(S.cave&&S.cave.kind==='vulcao'){S.embers=S.embers||[];while(S.embers.length<26)S.embers.push({x:cx+Math.random()*VW,y:cy+VH+Math.random()*20,ph:Math.random()*6,sp:10+Math.random()*18});
+    for(const e of S.embers){e.y-=e.sp*.016;e.x+=Math.sin(S.time*2+e.ph)*.3;const x=Math.round(e.x-cx),y=Math.round(e.y-cy),a=.5+.5*Math.sin(S.time*5+e.ph);
+      ctx.fillStyle='rgba(255,140,40,'+(a*.35)+')';ctx.fillRect(x-1,y-1,3,3);ctx.fillStyle='rgba(255,210,90,'+a+')';ctx.fillRect(x,y,1,1);}
+    S.embers=S.embers.filter(e=>e.y>cy-10&&e.x>cx-20&&e.x<cx+VW+20);}
   if(S.dragon)drawDragon(cx,cy);
   drawFade();
 }
@@ -1147,6 +1224,7 @@ function renderRoom(){const R=ROOMDEF[S.room.kind],[ox,oy]=roomOrigin(),night=is
   ctx.fillStyle='#0f0c1e';ctx.fillRect(0,0,VW,VH);
   const dr=R.door||[4,5],wf=Math.floor(S.time*2)%4;
   for(let ty=0;ty<R.h;ty++)for(let tx=0;tx<R.w;tx++){const x=ox+tx*T,y=oy+ty*T,door=ty===R.h-1&&dr.includes(tx);
+    if(inPool(R,tx,ty)&&R.lava){ctx.drawImage(tileSpr(TL.LAVA,(tx+ty)%4,wf),x,y);ctx.fillStyle='#2a1210';if(ty===R.pool[1])ctx.fillRect(x,y,16,2);if(ty===R.pool[3])ctx.fillRect(x,y+14,16,2);if(tx===R.pool[0])ctx.fillRect(x,y,2,16);if(tx===R.pool[2])ctx.fillRect(x+14,y,2,16);continue;}
     if(inPool(R,tx,ty)&&R.pit){ctx.fillStyle='#5a4a3a';ctx.fillRect(x,y,16,16);ctx.fillStyle='#4a3c2e';ctx.fillRect(x+((tx*5+ty*3)%10),y+((tx*3+ty*7)%10),4,3);ctx.drawImage(objSpr('rock'),x,y-2);continue;}
     if(inPool(R,tx,ty)){ctx.drawImage(tileSpr(TL.WATER,(tx+ty)%4,wf),x,y);ctx.fillStyle='#9fc8ec';
       if(ty===R.pool[1])ctx.fillRect(x,y,16,2);if(ty===R.pool[3])ctx.fillRect(x,y+14,16,2);if(tx===R.pool[0])ctx.fillRect(x,y,2,16);if(tx===R.pool[2])ctx.fillRect(x+14,y,2,16);continue;}
@@ -1177,7 +1255,7 @@ function renderRoom(){const R=ROOMDEF[S.room.kind],[ox,oy]=roomOrigin(),night=is
   ctx.globalAlpha=1;}
 function enterRoom(kind,b){S.room={kind,wx:(b.x+Math.floor(b.w/2))*T+8,wy:(b.y+b.h)*T+12};if(kind==='casa'&&!S.furn)S.furn=DEFAULT_HOME();
   const R=ROOMDEF[kind],dr=R.door||[4,5],pl=S.player;pl.x=(dr[0]+1)*T;pl.y=(R.h-2)*T+14;pl.dir=1;pl.swim=false;S.parts=[];S.fade=.7;sfx('talk');
-  say(kind==='casa'?'Sua casa! Durma na cama, guarde monstrinhos no baú e faça móveis na bancada.':kind==='ginasio'?'Ginásio de Água! A Líder Marina te espera do outro lado da piscina.':kind==='ginasio2'?'Ginásio de Pedra! O Líder Rocco te espera atrás das rochas.':'Casa da Vovó Tuca. Que cheirinho bom vem do fogão!',4.5);}
+  say(kind==='casa'?'Sua casa! Durma na cama, guarde monstrinhos no baú e faça móveis na bancada.':kind==='ginasio'?'Ginásio de Água! A Líder Marina te espera do outro lado da piscina.':kind==='ginasio2'?'Ginásio de Pedra! O Líder Rocco te espera atrás das rochas.':kind==='ginasio3'?'Ginásio de Fogo! A Líder Lara te espera do outro lado da lava.':'Casa da Vovó Tuca. Que cheirinho bom vem do fogão!',4.5);}
 function exitRoom(){const r=S.room;S.room=null;S.placing=null;S.parts=[];const pl=S.player;pl.x=r.wx;pl.y=r.wy;pl.dir=0;S.pet.px=pl.x;S.pet.py=pl.y+2;S.fade=.7;S.battleCD=2;sfx('talk');save();}
 function canPlace(tx,ty){const R=ROOMDEF.casa,h=FURN[S.placing].h||1,pl=S.player;
   if(tx<1||tx>R.w-2||ty<2||ty+h-1>R.h-2)return false;
@@ -1195,6 +1273,8 @@ function actRoom(){const pl=S.player,v=DIRV[pl.dir],tx=Math.floor((pl.x+v[0]*12)
     case 'fogao':return vovoGift();
     case 'lider':return gymTalk(GYM);
     case 'lider2':return gymTalk(GYM2);
+    case 'lider3':return gymTalk(GYM3);
+    case 'fogueira':say('Uma fogueira sempre acesa. Aqui dentro faz muito calor!');return;
     case 'cristal':say('Um cristal azul brilhante. É ele que ilumina a caverna!');return;
     case 'trofeu':say(S.badges&&S.badges.agua?'O troféu brilha com a sua Insígnia Gota!':'Troféus de quem venceu a Marina. Será que você consegue?');return;
     case 'boia':say('Uma boia. Aqui dentro não pode nadar, a piscina é da Marina!');return;}
@@ -1298,7 +1378,12 @@ function drawBattle(){const g=bctx,n=B.night;g.imageSmoothingEnabled=false;
   if(n){for(let k=0;k<26;k++){g.globalAlpha=.4+.6*Math.abs(Math.sin(S.time*2+k));g.fillStyle='#fff6c0';g.fillRect(hash2(k,1,5)*200|0,hash2(k,2,5)*34|0,1,1);}g.globalAlpha=1;ell(g,28,14,6,6,'#f2ecff');ell(g,31,12,5,5,'#1d1a48');}
   else ell(g,28,14,7,7,'#ffe27a');
   g.fillStyle=n?'#23452e':'#4f9c43';for(let x=0;x<200;x++){const h=Math.round(9+Math.sin(x*.05)*5+Math.sin(x*.13+1)*3);g.fillRect(x,62-h,1,h);}
-  if(B.cavebg){g.fillStyle='#1c1826';g.fillRect(0,0,200,62);for(let k=0;k<14;k++){const x=hash2(k,3,9)*200|0;g.fillStyle='#2a2434';g.fillRect(x,0,4,6+(hash2(k,4,9)*14|0));}
+  if(B.lavabg){g.fillStyle='#2a1010';g.fillRect(0,0,200,62);g.fillStyle='#4a1a12';g.fillRect(0,40,200,22);
+    for(let x=0;x<200;x++){const h=Math.round(10+Math.sin(x*.04)*6+Math.sin(x*.11)*3);g.fillStyle='#1a0c0c';g.fillRect(x,62-h,1,h);}
+    for(let k=0;k<10;k++){const x=(hash2(k,7,9)*200+S.time*6*(k%3+1))%200,y=60-((S.time*14*(k%4+1)+hash2(k,8,9)*60)%60);g.fillStyle='rgba(255,170,60,.8)';g.fillRect(x|0,y|0,1,1);}
+    g.fillStyle='#3e3438';g.fillRect(0,62,200,58);g.fillStyle='#c8401a';for(let y=70;y<120;y+=13){const o=(y*5+Math.floor(S.time*10))%30;for(let x=-30+o;x<200;x+=60)g.fillRect(x,y,22,2);}
+    ell(g,145,55,32,8,'#2a1c1c');ell(g,145,54,29,6,'#4a3a3a');ell(g,64,107,40,9,'#2a1c1c');ell(g,64,106,37,7,'#4a3a3a');}
+  else if(B.cavebg){g.fillStyle='#1c1826';g.fillRect(0,0,200,62);for(let k=0;k<14;k++){const x=hash2(k,3,9)*200|0;g.fillStyle='#2a2434';g.fillRect(x,0,4,6+(hash2(k,4,9)*14|0));}
     for(let k=0;k<6;k++){const x=hash2(k,5,9)*200|0,y=10+(hash2(k,6,9)*40|0);g.fillStyle='rgba(127,211,255,'+(.5+.4*Math.sin(S.time*2+k))+')';g.fillRect(x,y,2,3);}
     g.fillStyle='#4e4658';g.fillRect(0,62,200,58);g.fillStyle='#443c4e';for(let y=66;y<120;y+=8)g.fillRect(0,y,200,3);
     ell(g,145,55,32,8,'#3a3246');ell(g,145,54,29,6,'#5e5668');ell(g,64,107,40,9,'#3a3246');ell(g,64,106,37,7,'#5e5668');}
@@ -1340,7 +1425,7 @@ function startBattle(wm){
   S.mode='battle';for(const k in keys)keys[k]=false;joy.x=joy.y=0;touchRun=false;setPlayUI(false);
   const mk=()=>({lunge:0,flash:0,alpha:0,drop:0,scale:1});
   const wlv=wm.lvl||3,wid=wm.sp.evolve&&wlv>=wm.sp.evolve.lvl?wm.sp.evolve.to:wm.sp.id;S.seen[wid]=true;
-  B={wm,aqua:!!SPM[wid].aqua,cavebg:!!S.cave,wild:makeInst(wid,wlv),mi:S.team.findIndex(t=>t.hp>0),tw:[],parts:[],A:{me:mk(),en:mk()},beam:0,proj:null,cap:null,busy:true,skip:false,night:isNight()};
+  B={wm,aqua:!!SPM[wid].aqua,cavebg:!!S.cave&&S.cave.kind!=='vulcao',lavabg:!!S.cave&&S.cave.kind==='vulcao',wild:makeInst(wid,wlv),mi:S.team.findIndex(t=>t.hp>0),tw:[],parts:[],A:{me:mk(),en:mk()},beam:0,proj:null,cap:null,busy:true,skip:false,night:isNight()};
   $('battle').hidden=false;$('bmenu').textContent='';updateInfo();battleIntro();}
 async function battleIntro(){sfx('meet');await tween(400,k=>B.A.en.alpha=k);
   await msg('Um '+nm(B.wild)+' selvagem apareceu! (Nível '+B.wild.lvl+')');
@@ -1445,7 +1530,7 @@ async function runAway(){B.busy=true;setMenu([]);await msg(B.trainer?'Você desi
 function startTrainerBattle(tr){if(S.mode!=='play'||B)return;
   S.mode='battle';for(const k in keys)keys[k]=false;joy.x=joy.y=0;touchRun=false;setPlayUI(false);
   const mk=()=>({lunge:0,flash:0,alpha:0,drop:0,scale:1}),team=tr.team.map(([id,l])=>makeInst(id,l));for(const m of team)S.seen[m.sp]=true;
-  B={wm:null,aqua:tr.id==='agua',cavebg:tr.id==='pedra',trainer:Object.assign({},tr,{team,idx:0}),wild:team[0],mi:S.team.findIndex(t=>t.hp>0),tw:[],parts:[],A:{me:mk(),en:mk()},beam:0,proj:null,cap:null,busy:true,skip:false,night:false};
+  B={wm:null,aqua:tr.id==='agua',cavebg:tr.id==='pedra',lavabg:tr.id==='fogo',trainer:Object.assign({},tr,{team,idx:0}),wild:team[0],mi:S.team.findIndex(t=>t.hp>0),tw:[],parts:[],A:{me:mk(),en:mk()},beam:0,proj:null,cap:null,busy:true,skip:false,night:false};
   $('battle').hidden=false;$('bmenu').textContent='';updateInfo();trainerIntro();}
 async function trainerIntro(){const t=B.trainer;sfx('meet');await msg(t.name+', '+t.title+', aceitou o seu desafio!',1400);
   await tween(350,k=>B.A.en.alpha=k);await msg(t.name+' chamou '+nm(B.wild)+'!',900);await tween(300,k=>B.A.me.alpha=k);await msg('Vai, '+nm(me())+'!',800);mainMenu();}
@@ -1547,7 +1632,7 @@ function netSummary(){
   if(!netOn)return 'Conectando à sala online...';
   const n=PEERS.filter(p=>!p.sameTab).length+1;return 'Online ✓ Pessoas com o jogo aberto agora: '+n+(n===1?' (só você)':' (contando você)')+'.';}
 const permTxt={granted:'permitido',prompt:'ainda não perguntado',denied:'recusado',unavailable:'indisponível'};
-function peerWhere(q){if(q.w===FAMILY_SEED)return 'no Mundo da Família';if(q.w===FAMILY_SEED+1)return 'na caverna do Mundo da Família';if(q.w&&q.w!==0)return 'em outro mundo';return q.n?'no jogo solo (precisa entrar no Mundo da Família)':'na tela inicial';}
+function peerWhere(q){if(q.w===FAMILY_SEED)return 'no Mundo da Família';if(q.w===FAMILY_SEED+1)return 'na caverna do Mundo da Família';if(q.w===FAMILY_SEED+2)return 'no vulcão do Mundo da Família';if(q.w&&q.w!==0)return 'em outro mundo';return q.n?'no jogo solo (precisa entrar no Mundo da Família)':'na tela inicial';}
 function buildDiag(){const el=$('netDiag');el.textContent='';
   const line=(t,s,btn)=>{const r=document.createElement('div');r.className='trow';r.style.gridTemplateColumns='1fr auto';const mid=document.createElement('div'),b=document.createElement('strong'),m=document.createElement('small');
     b.textContent=t;m.textContent=s||'';mid.append(b,m);r.append(mid);if(btn){const x=document.createElement('button');x.type='button';x.textContent=btn[0];x.onclick=btn[1];r.append(x);}el.append(r);};
@@ -1610,7 +1695,7 @@ function buildFriends(){const box=$('friendsBox');box.hidden=S.slot!=='familia';
   for(const p of fs){const q=p.presence,r=document.createElement('div');r.className='trow';const im=document.createElement('img');im.alt='';
     im.src=typeof q.m==='string'&&SPM[q.m]?monURL(q.m):heroSpr(peerLook(q),0,0).toDataURL();
     const mid=document.createElement('div'),s=document.createElement('strong'),sm=document.createElement('small');s.textContent=String(q.n).slice(0,12);
-    const where=!inMyWorld(p)?(q.w===FAMILY_SEED+1?'Está na Caverna das Pedras.':q.w===FAMILY_SEED?'Está lá fora, na ilha.':'Está em outro mundo (jogo solo).'):q.r==='ginasio'||q.r==='ginasio2'?'Está num ginásio!':q.b===1?'Está batalhando!':q.r==='casa'?'Está dentro de casa.':q.r==='vovo'?'Está na casa da Vovó.':q.sw===1?'Está nadando.':'Explorando a ilha.';
+    const where=!inMyWorld(p)?(q.w===FAMILY_SEED+1?'Está na Caverna das Pedras.':q.w===FAMILY_SEED+2?'Está no Vulcão.':q.w===FAMILY_SEED?'Está lá fora, na ilha.':'Está em outro mundo (jogo solo).'):q.r==='ginasio'||q.r==='ginasio2'||q.r==='ginasio3'?'Está num ginásio!':q.b===1?'Está batalhando!':q.r==='casa'?'Está dentro de casa.':q.r==='vovo'?'Está na casa da Vovó.':q.sw===1?'Está nadando.':'Explorando a ilha.';
     sm.textContent=where+(typeof q.m==='string'&&SPM[q.m]?' Líder: '+SPM[q.m].n+' Nv '+(Number(q.ml)|0)+'.':'');mid.append(s,sm);r.append(im,mid);
     if(inMyWorld(p)){const bx=document.createElement('div');bx.className='row-btns';
       const mk=(t,fn)=>{const b=document.createElement('button');b.type='button';b.textContent=t;b.onclick=fn;bx.append(b);};
@@ -1620,7 +1705,7 @@ function buildFriends(){const box=$('friendsBox');box.hidden=S.slot!=='familia';
     el.append(r);}}
 
 /* ---------- minimap ---------- */
-const MM_COL=['#2456a8','#3f93e6','#ecd697','#5cb247','#3a8438','#caa46e','#8d8aa0','#7b5232','#a8703d','#5e5668','#1c1826','#e8d8a0'];
+const MM_COL=['#2456a8','#3f93e6','#ecd697','#5cb247','#3a8438','#caa46e','#8d8aa0','#7b5232','#a8703d','#5e5668','#1c1826','#e8d8a0','#4e4448','#ff6a2a','#2a1c1c'];
 let mmBase=null,mmSeed=null;
 function minimapBase(){if(mmBase&&mmSeed===W.seed)return mmBase;const c=document.createElement('canvas');c.width=WW;c.height=WH;const g=c.getContext('2d'),im=g.createImageData(WW,WH);
   for(let i=0;i<WW*WH;i++){let col=MM_COL[W.tile[i]]||'#000';const o=W.obj[i];if(o===OB.BLD)col='#d6453d';else if(o===OB.TREE||o===OB.PINE||o===OB.FRUIT)col='#2d6e30';
@@ -1786,7 +1871,7 @@ function setPlayUI(on){$('hud').hidden=!on;$('hotbar').hidden=!on;$('touch').hid
 function enterPlay(){S.pet={px:S.player.x,py:S.player.y+2,mv:0,face:1};S.emote=null;S.mode='play';S.mons=[];S.parts=[];S.flies=[];S.npcs=makeNPCs();showOnly(null);setPlayUI(true);$('hudName').textContent=S.name;renderHotbar();updateHUD();if(document.activeElement)document.activeElement.blur();}
 function startNew(){const seed=S.slot==='familia'?FAMILY_SEED:(Math.random()*1e9)|0;W=genWorld(seed);WORLD=W;S.cave=null;S.inv={semente:5,maca:2};S.t=.0625;S.day=1;S.seen={};S.team=[];S.box=[];S.caught={};S.badges={};S.gold=false;S.furn=null;S.furnInv={};S.giftDay=0;S.wishes=0;S.swimTip=false;S.player=newPlayer(80*T+8,82*T+12);enterPlay();
   save();showStarter();}
-function continueGame(d,slot){S.slot=slot||'solo';try{W=genWorld(d.seed);W.obj=fromB64(d.obj);W.data=fromB64(d.data);W.balls=d.balls;stampGym(W);stampCave(W);WORLD=W;S.cave=null;}catch(e){say('Não deu para abrir o jogo salvo. Comece um novo jogo.');return;}
+function continueGame(d,slot){S.slot=slot||'solo';try{W=genWorld(d.seed);W.obj=fromB64(d.obj);W.data=fromB64(d.data);W.balls=d.balls;stampGym(W);stampCave(W);stampVolcano(W);WORLD=W;S.cave=null;}catch(e){say('Não deu para abrir o jogo salvo. Comece um novo jogo.');return;}
   S.inv=d.inv||{};S.t=d.t||0;S.day=d.day||1;S.name=d.name||'Guerreiro';S.look=d.look||S.look;S.seen=d.seen||{};S.sound=d.sound!==false;
   S.team=Array.isArray(d.team)?d.team:[];S.box=Array.isArray(d.box)?d.box:[];S.caught=d.caught||{};
   S.music=d.music!==false;S.gold=!!d.gold;S.badges=d.badges||{};S.furn=Array.isArray(d.furn)?d.furn:null;S.furnInv=d.furnInv||{};S.giftDay=d.giftDay||0;S.wishes=d.wishes||0;S.swimTip=!!d.swimTip;
@@ -1798,7 +1883,7 @@ function continueGame(d,slot){S.slot=slot||'solo';try{W=genWorld(d.seed);W.obj=f
 function toTitle(){if(S.cave){W=WORLD;S.cave=null;}B=null;$('battle').hidden=true;$('wish').hidden=true;S.dragon=null;S.room=null;S.placing=null;S.dragonPending=0;S.mode='title';setPlayUI(false);showOnly('title');const d=loadSave('solo');$('btnContinue').hidden=!d;
   $('btnFamily').textContent=loadSave('familia')?'Entrar no Mundo da Família':'Mundo da Família (novo)';$('btnNew').textContent='Novo jogo';$('btnNew').classList.remove('warn');$('newWarn').hidden=true;newArmed=false;S.mons=[];S.parts=[];S.npcs=makeNPCs();}
 function pause(){if(S.mode!=='play')return;S.mode='pause';S.placing=null;save();buildFriends();buildDex();buildTeam();
-  {const got=GYMS.filter(G=>S.badges&&S.badges[G.id]).map(G=>'🏅 '+G.badge+' ('+G.name+')');$('badgeList').textContent=got.length?got.join(' · ')+(got.length<GYMS.length?' · Falta: '+GYMS.filter(G=>!(S.badges&&S.badges[G.id])).map(G=>G.badge+' ('+G.name+')').join(', '):' · Todas conquistadas!'):'Nenhuma ainda. Desafie a Marina (Ginásio de Água, na beira do rio) e o Rocco (Ginásio de Pedra, no fundo da caverna)!';}$('talkPanel').hidden=true;$('btnSound').textContent='Som: '+(S.sound?'ligado':'desligado');$('btnMusic').textContent='Música: '+(S.music?'ligada':'desligada');showOnly('pause');$('touch').hidden=true;joy.x=joy.y=0;touchRun=false;for(const k in keys)keys[k]=false;}
+  {const got=GYMS.filter(G=>S.badges&&S.badges[G.id]).map(G=>'🏅 '+G.badge+' ('+G.name+')');$('badgeList').textContent=got.length?got.join(' · ')+(got.length<GYMS.length?' · Falta: '+GYMS.filter(G=>!(S.badges&&S.badges[G.id])).map(G=>G.badge+' ('+G.name+')').join(', '):' · Todas conquistadas!'):'Nenhuma ainda. Desafie a Marina (Ginásio de Água, na beira do rio), o Rocco (Ginásio de Pedra, na caverna) e a Lara (Ginásio de Fogo, no vulcão)!';}$('talkPanel').hidden=true;$('btnSound').textContent='Som: '+(S.sound?'ligado':'desligado');$('btnMusic').textContent='Música: '+(S.music?'ligada':'desligada');showOnly('pause');$('touch').hidden=true;joy.x=joy.y=0;touchRun=false;for(const k in keys)keys[k]=false;}
 function resume(){S.mode='play';showOnly(null);setPlayUI(true);if(document.activeElement)document.activeElement.blur();}
 function buildDex(){const el=$('dex');el.textContent='';let n=0;
   let c=0;
@@ -1888,6 +1973,6 @@ function frame(now){const dt=Math.min(.05,(now-last)/1000);last=now;S.time+=dt;
   nextFrame(frame);}
 const nextFrame=/debugloop/.test(location.search)?(f=>setTimeout(()=>f(performance.now()),33)):(f=>requestAnimationFrame(f));
 nextFrame(frame);
-if(/debug/.test(location.search))window.__g={S,get W(){return W;},get B(){return B;},act,save,growTick,idx,OB,TL,T,startBattle,makeInst,maxHp,SPECIES,startDragon,collectBall,startTrainerBattle,GYM,GYM2,enterCave,exitCave,get WORLD(){return WORLD;},MUS,get AC(){return AC;},setPeers:a=>{PEERS=a;updateOnlineUI();},setRoom:r=>{ROOM=r;netOn=!!r;updateOnlineUI();},invite:(peer,k)=>{const p=friends().find(x=>x.peer===peer);if(p)invite(p,k);},get lastPres(){return lastPres;}};
+if(/debug/.test(location.search))window.__g={S,get W(){return W;},get B(){return B;},act,save,growTick,idx,OB,TL,T,startBattle,makeInst,maxHp,SPECIES,startDragon,collectBall,startTrainerBattle,GYM,GYM2,GYM3,enterCave,exitCave,get WORLD(){return WORLD;},MUS,get AC(){return AC;},setPeers:a=>{PEERS=a;updateOnlineUI();},setRoom:r=>{ROOM=r;netOn=!!r;updateOnlineUI();},invite:(peer,k)=>{const p=friends().find(x=>x.peer===peer);if(p)invite(p,k);},get lastPres(){return lastPres;}};
 })();
 </script>

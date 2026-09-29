@@ -28,6 +28,8 @@ O jogo foi programado com a ajuda do **Claude** (IA da Anthropic) como parceiro 
 | **Ginásio de Água** na beira do rio, com peixes e estrelas nadando | **Desafio da Líder Marina** na arena de água |
 | ![Caverna das Pedras](imagens/caverna.png) | ![Batalha contra o Rocco](imagens/batalha-rocco.png) |
 | **Caverna das Pedras**, escura e cheia de cristais e morcegos | **Desafio do Líder Rocco** no fundo da caverna |
+| ![Vulcão](imagens/vulcao.png) | ![Batalha contra a Lara](imagens/batalha-lara.png) |
+| **Vulcão** com rios de lava, Fagulhas e Magmitos | **Desafio da Líder Lara** na arena de lava |
 
 - 🧑‍🎤 **Crie seu guerreiro:** cabelo, cores, roupa e faixa.
 - 🌍 **Mundo aberto gerado automaticamente:** rios, lagos, florestas, montanhas, vila e **ciclo de dia e noite**.
@@ -40,6 +42,7 @@ O jogo foi programado com a ajuda do **Claude** (IA da Anthropic) como parceiro 
 - 🏊 **Nado** nos rios e lagos, onde vivem o **Barbatino** (peixe) e a **Estrelinha** (estrela-do-rio).
 - 🏛️ **Ginásio de Água:** desafie a Líder **Marina** e ganhe a **Insígnia Gota**.
 - 🦇 **Caverna das Pedras:** túneis escuros iluminados por cristais, com o **Cristalito** e o **Morceguinho** (tipo Voador), e o **Ginásio de Pedra** do Líder **Rocco** (Insígnia Rocha).
+- 🌋 **Vulcão:** rios de lava e brasas no ar, com a **Fagulha** e o **Magmito**, e o **Ginásio de Fogo** da Líder **Lara** (Insígnia Chama).
 - 🗺️ **Mapinha** mostrando onde está cada pessoa da família.
 - 🎵 **Música de fundo** composta em código, com uma trilha para o dia, a noite, as batalhas e o Dragão.
 
