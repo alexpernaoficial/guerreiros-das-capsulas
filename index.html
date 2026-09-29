@@ -279,7 +279,7 @@ button.trow[aria-pressed="true"]{border-color:var(--gold);box-shadow:0 0 0 2px v
       </div>
     </div>
     <div class="row"><button id="btnBack" type="button">Voltar</button><button id="btnStart" class="big" type="button">Entrar no mundo!</button></div>
-    <p class="help"><b>Notebook:</b> setas ou WASD andam · Espaço ou E faz a ação · Shift corre usando Ki · Esc pausa.<br><b>Celular:</b> joystick anda · AÇÃO interage · segure CORRER para correr.</p>
+    <p class="help"><b>Notebook:</b> setas ou WASD andam · Espaço ou E faz a ação · Shift corre usando Ki · Esc pausa.<br><b>Celular:</b> joystick anda · AÇÃO interage · segure CORRER para correr. Com a Nuvem Voadora, o botão vira VOAR.</p>
   </div>
 </section>
 
@@ -1097,11 +1097,11 @@ function collectBall(i){const s=W.data[i],b=W.balls[s-1];W.obj[i]=OB.NONE;if(b)b
 function faceTo(e,o){const dx=o.x-e.x,dy=o.y-e.y;return Math.abs(dx)>Math.abs(dy)?(dx<0?2:3):(dy<0?1:0);}
 function talk(n){n.dir=faceTo(n,S.player);n.moving=false;n.tm=3;sfx('talk');
   if(n.name==='Nina'&&!(S.inv.nuvem>0)&&GYMS.some(G=>S.badges&&S.badges[G.id])){give('nuvem',1);sfx('ball');burst(S.player.x,S.player.y-14,['#ffe27a','#fff6c0'],16,true);
-    say('Você já tem uma insígnia! Tome, a Nuvem Voadora! Toque nela na mochila (ou aperte F) para voar por cima de tudo!',7,n.name);return;}
+    say('Você já tem uma insígnia! Tome, a Nuvem Voadora! Aperte o botão VOAR (ou F) para voar por cima de tudo!',7,n.name);return;}
   if(questTalk(n))return;
   n.li=(n.li||0)%n.lines.length;say(n.lines[n.li],5,n.name);n.li++;}
 function toggleFly(){const pl=S.player;if(!pl)return;if(S.room||S.cave){say('Aqui dentro não dá para voar!');return;}
-  if(!S.flying){S.flying=true;S.fish=null;pl.swim=false;sfx('ball');burst(pl.x,pl.y-4,['#ffe27a','#fff6c0','#ffffff'],16,true);say('Nuvem Voadora! Voe por cima de tudo. Toque na nuvem de novo (ou F) para pousar.',4);}
+  if(!S.flying){S.flying=true;S.fish=null;pl.swim=false;sfx('ball');burst(pl.x,pl.y-4,['#ffe27a','#fff6c0','#ffffff'],16,true);say('Nuvem Voadora! Voe por cima de tudo. Toque em POUSAR (ou F) para descer.',4);}
   else{if(collides(pl.x,pl.y,true)){sfx('nope');say('Não dá para pousar aqui! Voe até um lugar livre (chão ou água).');return;}
     S.flying=false;S.battleCD=2;sfx('plant');burst(pl.x,pl.y-2,['#ffe27a','#fff'],10);say('Pousou!');}}
 
@@ -1228,7 +1228,7 @@ function updatePlayer(dt){const pl=S.player;
   if(Math.hypot(joy.x,joy.y)>.2){ix=joy.x;iy=joy.y;}
   const len=Math.hypot(ix,iy);if(len>1){ix/=len;iy/=len;}
   pl.moving=len>.01;pl.running=pl.moving&&(keys.shift||touchRun)&&pl.ki>1;
-  if(S.flying){const fs2=pl.running?175:130;if(pl.moving){pl.x=Math.max(10,Math.min(WW*T-10,pl.x+ix*fs2*dt));pl.y=Math.max(14,Math.min(WH*T-6,pl.y+iy*fs2*dt));
+  if(S.flying){const fs2=pl.running?175:150;if(pl.moving){pl.x=Math.max(10,Math.min(WW*T-10,pl.x+ix*fs2*dt));pl.y=Math.max(14,Math.min(WH*T-6,pl.y+iy*fs2*dt));
       pl.dir=Math.abs(ix)>Math.abs(iy)?(ix<0?2:3):(iy<0?1:0);pl.anim+=dt*8;pl.step=0;hatchEggs(fs2*dt/T);}
     if(pl.punch>0)pl.punch-=dt;follow(S.pet,pl.x,pl.y,dt);const ti=idx(Math.floor(pl.x/T),Math.floor((pl.y-3)/T));if(W.obj[ti]===OB.BALL)collectBall(ti);return;}
   if(!S.room){const ft=W.tile[idx(Math.floor(pl.x/T),Math.floor((pl.y-3)/T))];const was=pl.swim;pl.swim=ft===TL.WATER||ft===TL.DEEP;
@@ -1286,7 +1286,8 @@ function update(dt){
   if((S.saveT-=dt)<=0){S.saveT=20;save();}
   if((S.hudT-=dt)<=0){S.hudT=.2;updateHUD();}
 }
-function updateHUD(){const pl=S.player;if(!pl)return;$('kiFill').style.width=pl.ki.toFixed(0)+'%';
+const flyBtn=()=>S.inv&&S.inv.nuvem>0&&!S.room&&!S.cave;
+function updateHUD(){const pl=S.player;if(!pl)return;{const bt=flyBtn()?(S.flying?'POUSAR':'☁️ VOAR'):'CORRER';const bb=$('btnB');if(bb.textContent!==bt)bb.textContent=bt;bb.classList.toggle('on',flyBtn()?!!S.flying:touchRun);}$('kiFill').style.width=pl.ki.toFixed(0)+'%';
   const m=clockMin(),hh=String(Math.floor(m/60)).padStart(2,'0'),mm=String(Math.floor(m%60/10)*10).padStart(2,'0');
   $('clockTxt').textContent='Dia '+S.day+' · '+hh+':'+mm+(S.weather&&!S.cave&&!S.room?' '+WICON[S.weather.k]:'');$('skyIcon').className=isNight()?'moon':'';
   const MW=mainW(),left=MW.balls.filter(b=>!b.got);$('ballCount').textContent=(7-left.length)+'/7';
@@ -2196,8 +2197,8 @@ stick.addEventListener('pointermove',e=>{if(e.pointerId===joy.id)joyMove(e);});
 const joyEnd=e=>{if(e.pointerId===joy.id){joy.id=null;joy.x=joy.y=0;knob.style.transform='';}};
 stick.addEventListener('pointerup',joyEnd);stick.addEventListener('pointercancel',joyEnd);
 $('btnA').addEventListener('pointerdown',e=>{e.preventDefault();if(S.mode==='play')act();});
-const bB=$('btnB'),runOff=()=>{touchRun=false;bB.classList.remove('on');};
-bB.addEventListener('pointerdown',e=>{e.preventDefault();touchRun=true;bB.classList.add('on');try{bB.setPointerCapture(e.pointerId);}catch(_){}});
+const bB=$('btnB'),runOff=()=>{touchRun=false;if(!flyBtn())bB.classList.remove('on');};
+bB.addEventListener('pointerdown',e=>{e.preventDefault();if(flyBtn()){if(S.mode==='play')toggleFly();updateHUD();return;}touchRun=true;bB.classList.add('on');try{bB.setPointerCapture(e.pointerId);}catch(_){}});
 bB.addEventListener('pointerup',runOff);bB.addEventListener('pointercancel',runOff);
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&S.mode==='play')save();});
 addEventListener('pagehide',()=>{if(S.mode==='play')save();});
