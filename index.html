@@ -1707,6 +1707,8 @@ function buildFriends(){const box=$('friendsBox');box.hidden=S.slot!=='familia';
 /* ---------- minimap ---------- */
 const MM_COL=['#2456a8','#3f93e6','#ecd697','#5cb247','#3a8438','#caa46e','#8d8aa0','#7b5232','#a8703d','#5e5668','#1c1826','#e8d8a0','#4e4448','#ff6a2a','#2a1c1c'];
 let mmBase=null,mmSeed=null;
+const MM_MARK={ginasio:['#4aa8ff','Ginásio de Água','agua'],caverna:['#b0aabe','Caverna','pedra'],ginasio2:['#b0aabe','Ginásio de Pedra','pedra'],
+  vulcao:['#ff6a2a','Vulcão','fogo'],ginasio3:['#ff6a2a','Ginásio de Fogo','fogo']};
 function minimapBase(){if(mmBase&&mmSeed===W.seed)return mmBase;const c=document.createElement('canvas');c.width=WW;c.height=WH;const g=c.getContext('2d'),im=g.createImageData(WW,WH);
   for(let i=0;i<WW*WH;i++){let col=MM_COL[W.tile[i]]||'#000';const o=W.obj[i];if(o===OB.BLD)col='#d6453d';else if(o===OB.TREE||o===OB.PINE||o===OB.FRUIT)col='#2d6e30';
     const n=parseInt(col.slice(1),16);im.data[i*4]=n>>16;im.data[i*4+1]=n>>8&255;im.data[i*4+2]=n&255;im.data[i*4+3]=255;}
@@ -1714,6 +1716,14 @@ function minimapBase(){if(mmBase&&mmSeed===W.seed)return mmBase;const c=document
 function mmDot(g,x,y,c){g.fillStyle='#1a1426';g.fillRect(x-2,y-2,5,5);g.fillStyle=c;g.fillRect(x-1,y-1,3,3);}
 function drawMinimap(){const cv2=$('minimap');if(!W||!S.player||cv2.hidden)return;const big=cv2.classList.contains('big'),sz=big?320:160;
   if(cv2.width!==sz){cv2.width=sz;cv2.height=sz;}const g=cv2.getContext('2d'),k=sz/WW;g.imageSmoothingEnabled=false;g.drawImage(minimapBase(),0,0,sz,sz);
+  const label=(t,x,y,c,al)=>{g.font='bold 11px "Pixelify Sans", sans-serif';g.textAlign=al||'center';g.fillStyle='#1a1426';g.fillText(t,x+1,y+1);g.fillStyle=c;g.fillText(t,x,y);};
+  for(const b of W.blds){const m=MM_MARK[b.kind];if(!m)continue;const x=Math.round((b.x+b.w/2)*k),y=Math.round((b.y+b.h/2)*k),s=big?10:9,got=!!(S.badges&&S.badges[m[2]]);
+    g.fillStyle=got?'#ffd83a':'#1a1426';g.fillRect(x-(s>>1)-2,y-(s>>1)-2,s+4,s+4);g.fillStyle='#ffffff';g.fillRect(x-(s>>1)-1,y-(s>>1)-1,s+2,s+2);
+    g.fillStyle=m[0];g.fillRect(x-(s>>1),y-(s>>1),s,s);g.fillStyle='rgba(255,255,255,.7)';g.fillRect(x-(s>>1)+1,y-(s>>1)+1,2,2);
+    if(big){g.font='bold 11px "Pixelify Sans", sans-serif';const tw=g.measureText(m[1]+(got?' ✓':'')).width;let side=W.cave?0:(x<sz/2?-1:1);
+      if((side>0&&x+s/2+5+tw>sz-2)||(side<0&&x-s/2-5-tw<2))side=0;label(m[1]+(got?' ✓':''),side?x+side*(s/2+5):x,side?y+4:y+s+8,got?'#ffd83a':'#ffffff',side<0?'right':side>0?'left':'center');}}
+  if(big&&!W.cave)label('Vila',Math.round(80*k),Math.round(92*k),'#ffe27a');
+  if(W.exit){const x=Math.round(W.exit[0]*k),y=Math.round(W.exit[1]*k);g.fillStyle='#e8d8a0';g.fillRect(x-3,y-2,7,4);if(big)label('Saída',x,y-6,'#e8d8a0');}
   const blink=Math.floor(S.time*3)%2===0;
   if(S.slot==='familia')for(const p of friends()){if(!inMyWorld(p))continue;const q=p.presence;if(!Number.isFinite(q.x)||!Number.isFinite(q.y))continue;
     const x=Math.round(q.x/T*k),y=Math.round((q.y-3)/T*k);mmDot(g,x,y,'#56d27a');
