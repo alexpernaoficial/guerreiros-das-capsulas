@@ -291,6 +291,7 @@ button.trow[aria-pressed="true"]{border-color:var(--gold);box-shadow:0 0 0 2px v
       <button id="btnSave" type="button">Salvar agora</button>
       <button id="btnSound" type="button">Som: ligado</button>
       <button id="btnMusic" type="button">Música: ligada</button>
+      <button id="btnStyle" type="button">Estilo: Aventura</button>
       <button id="btnExit" type="button">Sair para o início</button>
     </div>
     <div id="friendsBox" class="team" hidden>
@@ -789,6 +790,21 @@ const TRACKS={
   dragon:{bpm:72,wave:'sawtooth',vol:.022,drums:0,bassEvery:4,bass:[38,38,46,45,46,41,38,45],
     mel:'62 . . . 65 . . . 69 . . . 67 65 64 . 62 . . . 65 . . . 70 . . . 69 . . . 74 . . . 72 . 70 . 69 . . . 65 . 67 . 69 . . . . . . . 73 . . . . . . .'},
 };
+Object.assign(TRACKS,{
+  calma_day:{bpm:88,wave:'triangle',vol:.065,drums:0,bassEvery:4,bass:[41,46,48,41,38,43,41,41],
+    mel:'65 . 69 . 72 . 69 . 70 . 69 . 67 . . . 64 . 67 . 70 . 69 67 65 . . . . . . . 62 . 65 . 69 . 67 65 64 . . . 67 . . . 65 . 69 . 72 . 74 72 69 . . . . . . .'},
+  calma_battle:{bpm:120,wave:'triangle',vol:.065,drums:1,bassEvery:2,bass:[45,43,45,41,48,43,41,40],
+    mel:'69 . 72 . 76 . 72 . 74 . 72 . 69 . 67 . 69 . 72 . 76 . 79 . 77 . 76 . 74 . . . 72 . 74 . 76 . 72 . 71 . 69 . 67 . 69 . 72 . 71 . 69 . 67 . 69 . . . 64 . . .'},
+  heroi_day:{bpm:144,wave:'square',vol:.028,drums:1,bassEvery:2,bass:[50,43,45,45,50,47,43,45],
+    mel:'74 . 74 78 81 . 78 . 79 . 78 . 76 . 74 . 73 . 74 76 78 . 74 . 76 . . . 69 . . . 74 . 74 78 81 . 83 . 86 . 83 . 81 . 79 . 78 . 79 81 83 . 81 79 78 . 76 . 74 . . .'},
+  heroi_battle:{bpm:176,wave:'sawtooth',vol:.02,drums:1,bassEvery:1,bass:[45,41,45,43,41,38,40,40],
+    mel:'69 69 . 72 . 74 . 76 77 . 76 . 74 . 72 . 69 69 . 72 . 74 . 77 79 . 77 . 76 . 74 . 81 . 79 . 77 . 76 . 74 . 76 . 77 . 79 . 81 . 83 . 84 . 83 81 81 . . . 76 . 80 .'},
+  festa_day:{bpm:150,wave:'square',vol:.028,drums:1,bassEvery:2,bass:[48,53,48,43,48,53,43,48],
+    mel:'72 . 72 76 . 79 76 . 77 . 77 81 . 79 77 . 76 . 76 79 . 84 81 . 79 . 77 . 76 . 74 . 72 . 72 76 . 79 76 . 77 . 81 . 84 . 81 . 79 . 77 . 76 . 74 . 72 . . . 67 . 72 .'},
+  festa_battle:{bpm:180,wave:'square',vol:.026,drums:1,bassEvery:1,bass:[48,43,50,45,48,50,52,48],
+    mel:'72 76 79 76 72 76 79 84 83 79 76 79 83 . . . 74 77 81 77 74 77 81 86 84 81 77 81 84 . . . 72 76 79 76 81 79 76 72 74 77 81 77 83 81 77 74 76 79 84 79 86 84 79 76 84 . 79 . 72 . . .'},
+});
+const MUSIC_STYLES=[['aventura','Aventura'],['calma','Calma'],['heroi','Heroica'],['festa','Festa']];
 for(const k in TRACKS){const t=TRACKS[k],tok=t.mel.split(/\s+/);t.notes=tok.map((x,i)=>{if(x==='.'||x==='-')return null;let d=1;while(tok[i+d]==='.')d++;return {m:+x,d};});}
 const MUS={track:null,step:0,next:0,gain:null,noise:null};
 const midiHz=m=>440*Math.pow(2,(m-69)/12);
@@ -802,7 +818,9 @@ function kick(t){const o=AC.createOscillator(),g=AC.createGain();o.frequency.set
   g.gain.setValueAtTime(.12,t);g.gain.exponentialRampToValueAtTime(.001,t+.14);o.connect(g).connect(MUS.gain);o.start(t);o.stop(t+.16);}
 function hat(t){const s=AC.createBufferSource(),f=AC.createBiquadFilter(),g=AC.createGain();s.buffer=MUS.noise;f.type='highpass';f.frequency.value=7000;
   g.gain.setValueAtTime(.025,t);g.gain.exponentialRampToValueAtTime(.001,t+.05);s.connect(f).connect(g).connect(MUS.gain);s.start(t);s.stop(t+.06);}
-function wantTrack(){if(S.mode==='dragon')return 'dragon';if(B)return 'battle';if(S.mode==='title'||S.mode==='creator')return 'day';if(S.room)return 'night';return isNight()?'night':'day';}
+function wantTrack(){const base=S.mode==='dragon'?'dragon':B?'battle':(S.mode==='title'||S.mode==='creator')?'day':S.room?'night':isNight()?'night':'day';
+  const st=S.musicStyle||'aventura';if(st==='aventura'||base==='dragon')return base;
+  const k=st+'_'+(base==='battle'?'battle':'day');if(base==='night'&&st!=='calma')return 'night';return TRACKS[k]?k:base;}
 function musicTick(){if(!AC||!MUS.gain||AC.state!=='running')return;
   const want=wantTrack();if(want!==MUS.track){MUS.track=want;MUS.step=0;MUS.next=AC.currentTime+.08;}
   if(!S.music)return;
@@ -1990,7 +2008,7 @@ function continueGame(d,slot){S.slot=slot||'solo';try{W=genWorld(d.seed);W.obj=f
 function toTitle(){if(S.cave){W=WORLD;S.cave=null;}B=null;$('battle').hidden=true;$('wish').hidden=true;S.dragon=null;S.room=null;S.placing=null;S.dragonPending=0;S.mode='title';setPlayUI(false);showOnly('title');const d=loadSave('solo');$('btnContinue').hidden=!d;
   $('btnFamily').textContent=loadSave('familia')?'Entrar no Mundo da Família':'Mundo da Família (novo)';$('btnNew').textContent='Novo jogo';$('btnNew').classList.remove('warn');$('newWarn').hidden=true;newArmed=false;S.mons=[];S.parts=[];S.npcs=makeNPCs();}
 function pause(){if(S.mode!=='play')return;S.mode='pause';S.placing=null;save();buildFriends();buildDex();buildTeam();
-  {const got=GYMS.filter(G=>S.badges&&S.badges[G.id]).map(G=>'🏅 '+G.badge+' ('+G.name+')');if(S.champion)got.unshift('👑 Campeão da Ilha');$('badgeList').textContent=got.length?got.join(' · ')+(got.length<GYMS.length?' · Falta: '+GYMS.filter(G=>!(S.badges&&S.badges[G.id])).map(G=>G.badge+' ('+G.name+')').join(', '):(S.champion?' · Todas conquistadas!':' · Todas conquistadas! Agora desafie o Campeão Zeno na Arena, perto do vulcão!')):'Nenhuma ainda. Desafie a Marina (Ginásio de Água, na beira do rio), o Rocco (Ginásio de Pedra, na caverna) a Lara (Ginásio de Fogo, no vulcão) e a Brisa (Torre dos Ventos)!';}$('talkPanel').hidden=true;$('btnSound').textContent='Som: '+(S.sound?'ligado':'desligado');$('btnMusic').textContent='Música: '+(S.music?'ligada':'desligada');showOnly('pause');$('touch').hidden=true;joy.x=joy.y=0;touchRun=false;for(const k in keys)keys[k]=false;}
+  {const got=GYMS.filter(G=>S.badges&&S.badges[G.id]).map(G=>'🏅 '+G.badge+' ('+G.name+')');if(S.champion)got.unshift('👑 Campeão da Ilha');$('badgeList').textContent=got.length?got.join(' · ')+(got.length<GYMS.length?' · Falta: '+GYMS.filter(G=>!(S.badges&&S.badges[G.id])).map(G=>G.badge+' ('+G.name+')').join(', '):(S.champion?' · Todas conquistadas!':' · Todas conquistadas! Agora desafie o Campeão Zeno na Arena, perto do vulcão!')):'Nenhuma ainda. Desafie a Marina (Ginásio de Água, na beira do rio), o Rocco (Ginásio de Pedra, na caverna) a Lara (Ginásio de Fogo, no vulcão) e a Brisa (Torre dos Ventos)!';}$('talkPanel').hidden=true;$('btnSound').textContent='Som: '+(S.sound?'ligado':'desligado');$('btnMusic').textContent='Música: '+(S.music?'ligada':'desligada');$('btnStyle').textContent='Estilo: '+styleName();showOnly('pause');$('touch').hidden=true;joy.x=joy.y=0;touchRun=false;for(const k in keys)keys[k]=false;}
 function resume(){S.mode='play';showOnly(null);setPlayUI(true);if(document.activeElement)document.activeElement.blur();}
 function buildDex(){const el=$('dex');el.textContent='';let n=0;
   let c=0;
@@ -2019,6 +2037,11 @@ $('menuBtn').onclick=e=>{e.currentTarget.blur();pause();};
 $('btnResume').onclick=resume;
 $('btnSave').onclick=()=>{$('btnSave').textContent=save()?'Salvo!':'Não deu para salvar';setTimeout(()=>$('btnSave').textContent='Salvar agora',1500);};
 $('btnSound').onclick=()=>{S.sound=!S.sound;$('btnSound').textContent='Som: '+(S.sound?'ligado':'desligado');};
+const styleName=()=>(MUSIC_STYLES.find(m=>m[0]===(S.musicStyle||'aventura'))||MUSIC_STYLES[0])[1];
+$('btnStyle').onclick=()=>{const i=MUSIC_STYLES.findIndex(m=>m[0]===(S.musicStyle||'aventura'));S.musicStyle=MUSIC_STYLES[(i+1)%MUSIC_STYLES.length][0];
+  ensureAudio();if(!S.music){S.music=true;if(MUS.gain)MUS.gain.gain.value=1;$('btnMusic').textContent='Música: ligada';}
+  MUS.track=null;$('btnStyle').textContent='Estilo: '+styleName();try{localStorage.setItem('guerreiros-estilo-musica',S.musicStyle);}catch(e){}};
+try{const m=localStorage.getItem('guerreiros-estilo-musica');if(m&&MUSIC_STYLES.some(x=>x[0]===m))S.musicStyle=m;}catch(e){}
 $('btnMusic').onclick=()=>{S.music=!S.music;ensureAudio();if(MUS.gain)MUS.gain.gain.value=S.music?1:0;MUS.track=null;$('btnMusic').textContent='Música: '+(S.music?'ligada':'desligada');};
 addEventListener('pointerdown',ensureAudio,true);addEventListener('keydown',ensureAudio,true);
 $('btnExit').onclick=()=>{save();toTitle();};
