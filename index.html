@@ -279,7 +279,7 @@ button.trow[aria-pressed="true"]{border-color:var(--gold);box-shadow:0 0 0 2px v
       </div>
     </div>
     <div class="row"><button id="btnBack" type="button">Voltar</button><button id="btnStart" class="big" type="button">Entrar no mundo!</button></div>
-    <p class="help"><b>Notebook:</b> setas ou WASD andam · Espaço ou E faz a ação · Shift corre usando Ki · Esc pausa.<br><b>Celular:</b> joystick anda · AÇÃO interage · segure CORRER para correr. Com a Nuvem Voadora, o botão vira VOAR.</p>
+    <p class="help"><b>Notebook:</b> setas ou WASD andam · Espaço ou E faz a ação · Shift corre usando Ki · Esc pausa.<br><b>Celular:</b> joystick anda · AÇÃO interage · VOAR chama a Nuvem Voadora (dentro das casas e cavernas vira CORRER).</p>
   </div>
 </section>
 
@@ -314,7 +314,7 @@ button.trow[aria-pressed="true"]{border-color:var(--gold);box-shadow:0 0 0 2px v
     <h3 id="dexTitle">Monstrinhos vistos</h3>
     <div class="dex" id="dex"></div>
     <p class="help"><b>Dica:</b> encoste num monstrinho selvagem para batalhar. Deixe ele fraquinho (a Onda de Ki ajuda!) e jogue a Cápsula. O Lunar só aparece de noite.</p>
-    <p class="help"><b>Notebook:</b> setas/WASD · Espaço/E ação · Shift correr · Esc pausa. <b>Celular:</b> joystick · AÇÃO · CORRER.</p>
+    <p class="help"><b>Notebook:</b> setas/WASD · Espaço/E ação · Shift correr · F voar · Esc pausa. <b>Celular:</b> joystick · AÇÃO · VOAR.</p>
   </div>
 </section>
 
@@ -1232,7 +1232,7 @@ function updatePlayer(dt){const pl=S.player;
       pl.dir=Math.abs(ix)>Math.abs(iy)?(ix<0?2:3):(iy<0?1:0);pl.anim+=dt*8;pl.step=0;hatchEggs(fs2*dt/T);}
     if(pl.punch>0)pl.punch-=dt;follow(S.pet,pl.x,pl.y,dt);const ti=idx(Math.floor(pl.x/T),Math.floor((pl.y-3)/T));if(W.obj[ti]===OB.BALL)collectBall(ti);return;}
   if(!S.room){const ft=W.tile[idx(Math.floor(pl.x/T),Math.floor((pl.y-3)/T))];const was=pl.swim;pl.swim=ft===TL.WATER||ft===TL.DEEP;
-    if(pl.swim&&!was){burst(pl.x,pl.y-4,['#bfe3ff','#ffffff'],10,true);sfx('eat');if(!S.swimTip){S.swimTip=true;say('Você está nadando! Na água você fica mais devagar. Segure CORRER para nadar rápido.',4);}}}
+    if(pl.swim&&!was){burst(pl.x,pl.y-4,['#bfe3ff','#ffffff'],10,true);sfx('eat');if(!S.swimTip){S.swimTip=true;say('Você está nadando! Na água você fica mais devagar. Segure Shift para nadar rápido, ou chame a Nuvem Voadora!',4);}}}
   else pl.swim=false;
   const sp=pl.swim?(pl.running?72:42):(pl.running?108:62);
   if(pl.moving&&S.fish){S.fish=null;}
@@ -1286,7 +1286,7 @@ function update(dt){
   if((S.saveT-=dt)<=0){S.saveT=20;save();}
   if((S.hudT-=dt)<=0){S.hudT=.2;updateHUD();}
 }
-const flyBtn=()=>S.inv&&S.inv.nuvem>0&&!S.room&&!S.cave;
+const flyBtn=()=>!S.room&&!S.cave;
 function updateHUD(){const pl=S.player;if(!pl)return;{const bt=flyBtn()?(S.flying?'POUSAR':'☁️ VOAR'):'CORRER';const bb=$('btnB');if(bb.textContent!==bt)bb.textContent=bt;bb.classList.toggle('on',flyBtn()?!!S.flying:touchRun);}$('kiFill').style.width=pl.ki.toFixed(0)+'%';
   const m=clockMin(),hh=String(Math.floor(m/60)).padStart(2,'0'),mm=String(Math.floor(m%60/10)*10).padStart(2,'0');
   $('clockTxt').textContent='Dia '+S.day+' · '+hh+':'+mm+(S.weather&&!S.cave&&!S.room?' '+WICON[S.weather.k]:'');$('skyIcon').className=isNight()?'moon':'';
@@ -2185,7 +2185,7 @@ addEventListener('keydown',e=>{const k=e.key.toLowerCase();
   if(S.mode!=='play')return;
   keys[k]=true;if(e.shiftKey)keys.shift=true;
   if(k===' '||k==='e'||k==='enter'){e.preventDefault();if(!e.repeat)act();}
-  else if(k==='f'&&!e.repeat){if(S.inv.nuvem>0)toggleFly();else say('Você ainda não tem a Nuvem Voadora. A Nina dá uma para quem tiver 1 insígnia!');}
+  else if(k==='f'&&!e.repeat){toggleFly();}
   else if(k==='escape'||k==='p')pause();
   else if(k.startsWith('arrow'))e.preventDefault();});
 addEventListener('keyup',e=>{const k=e.key.toLowerCase();keys[k]=false;if(k==='shift')keys.shift=false;});
