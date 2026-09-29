@@ -32,6 +32,8 @@ O jogo foi programado com a ajuda do **Claude** (IA da Anthropic) como parceiro 
 | **Vulcão** com rios de lava, Fagulhas e Magmitos | **Desafio da Líder Lara** na arena de lava |
 | ![Torre dos Ventos](imagens/torre.png) | ![O lendário Mentalis](imagens/batalha-mentalis.png) |
 | **Torre dos Ventos** com Plumito e Nuvinha | **O lendário Mentalis** no alto da torre |
+| ![Arena do Campeão](imagens/arena.png) | ![Batalha contra o Campeão Zeno](imagens/batalha-zeno.png) |
+| **Arena do Campeão**, que só abre com as 4 insígnias | **A batalha final** contra o Campeão Zeno |
 
 - 🧑‍🎤 **Crie seu guerreiro:** cabelo, cores, roupa e faixa.
 - 🌍 **Mundo aberto gerado automaticamente:** rios, lagos, florestas, montanhas, vila e **ciclo de dia e noite**.
@@ -47,6 +49,7 @@ O jogo foi programado com a ajuda do **Claude** (IA da Anthropic) como parceiro 
 - 🌋 **Vulcão:** rios de lava e brasas no ar, com a **Fagulha** e o **Magmito**, e o **Ginásio de Fogo** da Líder **Lara** (Insígnia Chama).
 - 🌬️ **Torre dos Ventos:** o **Ginásio do Ar** da Líder **Brisa** (Insígnia Pena), com o **Plumito** e a **Nuvinha** voando pela ilha.
 - 🔮 **Mentalis:** um monstrinho **lendário** do tipo Psíquico, escondido num orbe misterioso no alto da torre.
+- 👑 **Campeão da Ilha:** com as 4 insígnias, a **Arena do Campeão** abre. Vença o **Campeão Zeno** e seus 6 monstrinhos para ganhar a coroa e entrar no **Hall da Fama**.
 - 🗺️ **Mapinha** mostrando onde está cada pessoa da família.
 - 🎵 **Música de fundo** composta em código, com uma trilha para o dia, a noite, as batalhas e o Dragão.
 

@@ -712,6 +712,7 @@ const ROOMDEF={
   ginasio:{name:'Ginásio de Água',w:12,h:10,wall:'#bfe6ff',wall2:'#a8d8f8',trim:'#2456a8',floor:'#e4f2ff',floor2:'#c8e0f5',tiles:1,door:[5,6],windows:[2,9],pool:[3,4,8,6]},
   ginasio2:{name:'Ginásio de Pedra',w:12,h:10,wall:'#6a6478',wall2:'#5a5468',trim:'#3a3448',floor:'#8a7a64',floor2:'#7a6a56',tiles:1,door:[5,6],windows:[],pool:[3,4,8,6],pit:1},
   ginasio3:{name:'Ginásio de Fogo',w:12,h:10,wall:'#5a2a24',wall2:'#4a2420',trim:'#2a1210',floor:'#3a3036',floor2:'#2e262c',tiles:1,door:[5,6],windows:[],pool:[3,4,8,6],lava:1},
+  arena:{name:'Arena do Campeão',w:12,h:10,wall:'#f0e0b0',wall2:'#e0cc98',trim:'#b8862a',floor:'#fff4dc',floor2:'#f2e4c0',tiles:1,door:[5,6],windows:[2,9],carpet:1},
   ginasio4:{name:'Torre dos Ventos',w:12,h:10,wall:'#dff2ff',wall2:'#c8e6fb',trim:'#6aa8d8',floor:'#f4fbff',floor2:'#e2f1fb',tiles:1,door:[5,6],windows:[2,9],pool:[3,4,8,6],sky:1},
 };
 const GYM={id:'agua',de:'da',art:'a',name:'Marina',title:'Líder do Ginásio de Água',badge:'Insígnia Gota',look:{hair:'chama',hc:5,skin:0,gi:1,belt:4},
@@ -726,6 +727,11 @@ const GYM4={id:'ar',de:'da',art:'a',name:'Brisa',title:'Líder da Torre dos Vent
   team:[['nimbao',26],['morcegao',27],['tempestor',29]],
   intro:'Eu sou a Brisa! No alto da Torre dos Ventos, meus monstrinhos voam acima das nuvens! Vença os 3 e ganhe a Insígnia Pena. Dica: Raio e Pedra são ótimos contra Voador!'};
 const GYMS=[GYM,GYM2,GYM3,GYM4];
+const CHAMP={id:'campeao',de:'do',art:'o',name:'Zeno',title:'Campeão da Ilha',badge:'Troféu do Campeão',look:{hair:'espetado',hc:1,skin:0,gi:5,belt:3},
+  team:[['trovoada',34],['aquarino',34],['florestao',35],['rochedao',35],['dragoflama',36],['estelar',38]],
+  intro:'Então você juntou as 4 insígnias! Eu sou o Zeno, o Campeão da Ilha. Meus 6 monstrinhos são os mais fortes que existem, e o último é um lendário! Mostre tudo o que aprendeu!',
+  rematch:'Você já é Campeão da Ilha! Quer uma revanche? Treinei muito desde a última vez!'};
+const ARENA_FURN=[{k:'campeao',x:5,y:2},{k:'trofeu',x:2,y:2},{k:'trofeu',x:9,y:2},{k:'placa',x:10,y:5},{k:'vaso',x:1,y:8},{k:'vaso',x:10,y:8},{k:'trofeu',x:1,y:5}];
 const GYM4_FURN=[{k:'lider4',x:5,y:2},{k:'trofeu',x:2,y:2},{k:'trofeu',x:9,y:2},{k:'catavento',x:1,y:4},{k:'catavento',x:10,y:4},{k:'vaso',x:1,y:8},{k:'vaso',x:10,y:8}];
 const ORBE={k:'orbe',x:9,y:7};
 const GYM3_FURN=[{k:'lider3',x:5,y:2},{k:'trofeu',x:2,y:2},{k:'trofeu',x:9,y:2},{k:'fogueira',x:1,y:4},{k:'fogueira',x:10,y:4},{k:'fogueira',x:1,y:8},{k:'fogueira',x:10,y:8}];
@@ -736,7 +742,7 @@ const FURN={
   mesa:{n:'Mesa',cost:{madeira:3}},cadeira:{n:'Cadeira',cost:{madeira:2}},poltrona:{n:'Poltrona',cost:{madeira:2,flor:1}},
   estante:{n:'Estante',cost:{madeira:4}},vaso:{n:'Vaso de flor',cost:{pedra:1,flor:1}},tapete:{n:'Tapete',cost:{flor:2},walk:true},
   abajur:{n:'Abajur',cost:{madeira:1,pedra:1}},estatua:{n:'Estátua do líder',cost:{pedra:4}},
-  lider:{n:'Marina'},lider2:{n:'Rocco'},lider3:{n:'Lara'},lider4:{n:'Brisa'},catavento:{n:'Catavento'},orbe:{n:'Orbe misterioso'},fogueira:{n:'Fogueira'},cristal:{n:'Cristal'},trofeu:{n:'Troféu'},boia:{n:'Boia'},
+  lider:{n:'Marina'},lider2:{n:'Rocco'},lider3:{n:'Lara'},lider4:{n:'Brisa'},campeao:{n:'Zeno'},placa:{n:'Hall da Fama'},catavento:{n:'Catavento'},orbe:{n:'Orbe misterioso'},fogueira:{n:'Fogueira'},cristal:{n:'Cristal'},trofeu:{n:'Troféu'},boia:{n:'Boia'},
 };
 const CRAFT=['mesa','cadeira','poltrona','estante','vaso','tapete','abajur','estatua'];
 const DEFAULT_HOME=()=>[{k:'cama',x:1,y:2,fixed:1},{k:'bancada',x:7,y:2,fixed:1},{k:'bau',x:8,y:2,fixed:1},{k:'tapete',x:4,y:4}];
@@ -759,6 +765,8 @@ const FURNP={
   lider2:[16,20,g=>g.drawImage(heroSpr(GYM2.look,0,0),1,1),false],
   lider3:[16,20,g=>g.drawImage(heroSpr(GYM3.look,0,0),1,1),false],
   lider4:[16,20,g=>g.drawImage(heroSpr(GYM4.look,0,0),1,1),false],
+  campeao:[16,20,g=>{const R=pen(g);R(3,0,10,3,'#ffd83a');R(4,0,2,1,'#fff6c0');g.drawImage(heroSpr(CHAMP.look,0,0),1,2);}],
+  placa:[16,20,g=>{const R=pen(g);R(7,12,2,8,'#6a4a1a');R(1,1,14,12,'#b8862a');R(2,2,12,10,'#fff4dc');R(4,4,8,1,'#b8862a');R(4,6,6,1,'#8a6a1a');R(4,8,7,1,'#8a6a1a');R(6,9,4,2,'#ffd83a');}],
   catavento:[16,24,g=>{const R=pen(g);R(7,8,2,16,'#8d879c');R(4,2,4,3,'#e8453c');R(8,5,3,4,'#ffd83a');R(5,8,3,3,'#4aa8ff');R(2,5,3,2,'#5cc25a');R(7,5,2,2,'#ffffff');}],
   orbe:[16,20,g=>{const R=pen(g);R(4,15,8,4,'#6a6478');R(3,18,10,2,'#4e4a5e');for(let y=2;y<15;y++)for(let x=2;x<15;x++){const d=Math.hypot(x+.5-8,y+.5-8.5);if(d<5.8)R(x,y,1,1,d<2.5?'#f0d0ff':d<4.5?'#c890f0':'#8a5ad8');}R(6,5,2,2,'#ffffff');}],
   fogueira:[16,16,g=>{const R=pen(g);R(3,11,10,4,'#6a6478');R(2,10,12,2,'#8d879c');R(5,4,6,7,'#ff5a2a');R(6,2,4,5,'#ff8a1e');R(7,0,2,4,'#ffd23a');R(7,6,2,4,'#ffd23a');}],
@@ -849,7 +857,7 @@ function genWorld(seed){
     if(t===TL.GRASS){if(q<.03)obj[i]=OB.TREE;else if(q<.04){obj[i]=OB.FRUIT;data[i]=1;}else if(q<.052){obj[i]=OB.BUSH;data[i]=1;}else if(q<.058)obj[i]=OB.ROCK;else if(q<.1){obj[i]=OB.FLOWER;data[i]=(q*1000|0)%4;}else if(tall&&q<.75)obj[i]=OB.TALL;}
     else if(t===TL.FOREST){if(q<.2)obj[i]=OB.PINE;else if(q<.26)obj[i]=OB.TREE;else if(q<.29){obj[i]=OB.FRUIT;data[i]=1;}else if(q<.33){obj[i]=OB.BUSH;data[i]=1;}else if(q<.35)obj[i]=OB.ROCK;else if(tall&&q<.8)obj[i]=OB.TALL;}
     else if(t===TL.SAND){if(q<.02)obj[i]=OB.ROCK;}}
-  stampGym({tile,obj,data,blds,riverX,balls:[]});stampCave({tile,obj,data,blds,riverX,balls:[]});stampVolcano({tile,obj,data,blds,riverX,balls:[]});stampTower({tile,obj,data,blds,riverX,balls:[]});
+  stampGym({tile,obj,data,blds,riverX,balls:[]});stampCave({tile,obj,data,blds,riverX,balls:[]});stampVolcano({tile,obj,data,blds,riverX,balls:[]});stampTower({tile,obj,data,blds,riverX,balls:[]});stampArena({tile,obj,data,blds,riverX,balls:[]});
   // esferas
   const balls=[];let tries=0;
   while(balls.length<7&&tries<8000){tries++;const x=6+(r()*(WW-12)|0),y=6+(r()*(WH-12)|0),i=idx(x,y),t=tile[i];
@@ -943,6 +951,20 @@ function gym3Spr(){return spr('gym3',80,76,g=>{const R=pen(g);
   R(0,30,80,3,'#1a1014');
   for(let y=5;y<28;y++)for(let x=30;x<51;x++){const dx=x+.5-40,dy=y+.5-17;if(Math.hypot(dx*1.3,dy)<9-(dy<0?dy*.25:0))R(x,y,1,1,Math.hypot(dx,dy)<5?'#ffd23a':'#ff5a2a');}
   R(8,38,4,10,'#2a1c1c');R(68,38,4,10,'#2a1c1c');R(7,33,6,5,'#ff5a2a');R(67,33,6,5,'#ff5a2a');R(8,31,4,2,'#ffd23a');R(68,31,4,2,'#ffd23a');},true);}
+function stampArena(w){const step=w.riverX[80]>80?1:-1,vx=80-step*6,ax=vx<80?vx+2:vx-6,ay=50;
+  for(let y=ay-2;y<=ay+4;y++)for(let x=ax-1;x<=ax+5;x++){const i=idx(x,y);if(w.obj[i]===OB.BALL){const b=w.balls.find(b=>b.x===x&&b.y===y);w.obj[i]=OB.NONE;if(b)relocateBall(w,b);}
+    w.obj[i]=OB.NONE;if(w.tile[i]!==TL.PATH&&w.tile[i]!==TL.BRIDGE)w.tile[i]=TL.GRASS;}
+  for(let y=ay;y<ay+4;y++)for(let x=ax;x<ax+5;x++)w.obj[idx(x,y)]=OB.BLD;
+  const dx=ax+2;for(let x=Math.min(dx,vx);x<=Math.max(dx,vx);x++){const i=idx(x,ay+4);w.obj[i]=OB.NONE;w.tile[i]=TL.PATH;}
+  if(!w.blds.some(b=>b.kind==='arena'))w.blds.push({x:ax,y:ay,w:5,h:4,kind:'arena'});}
+function arenaSpr(){return spr('arena',80,76,g=>{const R=pen(g);
+  R(2,28,76,47,'#f0e0b0');for(let x=6;x<74;x+=12){R(x,36,8,14,'#b8862a');R(x+1,37,6,13,'#6a4a1a');R(x,56,8,17,'#b8862a');R(x+1,57,6,16,'#8a5a2a');}
+  R(2,28,76,3,'#b8862a');R(2,52,76,2,'#b8862a');R(2,73,76,2,'#b8862a');R(2,28,2,47,'#b8862a');R(76,28,2,47,'#b8862a');
+  R(30,50,20,25,'#b8862a');R(32,52,16,23,'#c0302a');R(34,54,12,21,'#e8453c');R(39,54,2,21,'#ffd83a');
+  for(let y=0;y<26;y++){const half=Math.round(20+y*.78);R(40-half,y+2,half*2,1,y%5===4?'#b8862a':'#ffd83a');}
+  R(0,28,80,3,'#8a6a1a');
+  R(31,6,18,10,'#fff6c0');R(31,6,18,2,'#e0a800');R(32,2,3,5,'#e0a800');R(38,0,4,7,'#e0a800');R(45,2,3,5,'#e0a800');R(33,9,3,3,'#e8453c');R(38,9,4,3,'#4aa8ff');R(44,9,3,3,'#5cc25a');
+  R(12,4,2,24,'#6a4a1a');R(14,4,8,6,'#c0302a');R(66,4,2,24,'#6a4a1a');R(58,4,8,6,'#c0302a');},true);}
 function stampTower(w){const step=w.riverX[80]>80?1:-1,cx=80-step*26,tx=step>0?cx+4:cx-6,ty=77;
   for(let y=ty-4;y<=ty+2;y++)for(let x=tx-1;x<=tx+3;x++){const i=idx(x,y);if(w.obj[i]===OB.BALL){const b=w.balls.find(b=>b.x===x&&b.y===y);w.obj[i]=OB.NONE;if(b)relocateBall(w,b);}
     w.obj[i]=OB.NONE;if(w.tile[i]!==TL.PATH&&w.tile[i]!==TL.BRIDGE)w.tile[i]=TL.GRASS;}
@@ -985,7 +1007,7 @@ function gymSpr(){return spr('gym',80,76,g=>{const R=pen(g);
   for(let y=14;y<24;y++)for(let x=34;x<47;x++)if(Math.hypot(x+.5-40,y+.5-18.5)<4.6)R(x,y,1,1,'#2f7fe0');
   R(38,16,1,3,'#9fdcff');
 },true);}
-function roomFurn(){return !S.room?[]:S.room.kind==='casa'?S.furn:S.room.kind==='ginasio'?GYM_FURN:S.room.kind==='ginasio2'?GYM2_FURN:S.room.kind==='ginasio3'?GYM3_FURN:S.room.kind==='ginasio4'?(S.badges&&S.badges.ar&&!(S.caught&&S.caught.mentalis)?GYM4_FURN.concat([ORBE]):GYM4_FURN):VOVO_FURN;}
+function roomFurn(){return !S.room?[]:S.room.kind==='casa'?S.furn:S.room.kind==='ginasio'?GYM_FURN:S.room.kind==='ginasio2'?GYM2_FURN:S.room.kind==='ginasio3'?GYM3_FURN:S.room.kind==='arena'?ARENA_FURN:S.room.kind==='ginasio4'?(S.badges&&S.badges.ar&&!(S.caught&&S.caught.mentalis)?GYM4_FURN.concat([ORBE]):GYM4_FURN):VOVO_FURN;}
 function furnAt(tx,ty){return roomFurn().find(f=>{const d=FURN[f.k];return tx>=f.x&&tx<f.x+1&&ty>=f.y&&ty<f.y+(d.h||1);});}
 const inPool=(R,tx,ty)=>R.pool&&tx>=R.pool[0]&&tx<=R.pool[2]&&ty>=R.pool[1]&&ty<=R.pool[3];
 function roomSolid(tx,ty){const R=ROOMDEF[S.room.kind],dr=R.door||[4,5];if(tx<1||tx>R.w-2||ty<2||ty>R.h-1)return true;
@@ -1003,7 +1025,7 @@ const keys={};let touchRun=false;const joy={id:null,x:0,y:0,cx:0,cy:0};
 function makeNPCs(){return [
   {name:'Vovó Tuca',look:{hair:'tigela',hc:4,skin:1,gi:5,belt:2},x:78*T+8,y:79*T+12,dir:0,tm:1,lines:['Sua casa é a de telhado vermelho, com a estrela na porta! Lá dentro tem cama, baú e bancada para fazer móveis.','Minha casa é a de telhado roxo. Passe lá todo dia para pegar um pedaço de bolo!','Olá, guerreiro! A Loja de telhado azul troca madeira e pedra por Cápsulas.','Deixe o monstrinho selvagem fraquinho antes de jogar a Cápsula. Assim é mais fácil pegar!','A Onda de Ki do seu guerreiro nunca derruba o monstrinho. É perfeita para deixar ele fraquinho!','Quando escurece, aparece o Lunar. Ele só sai de noite!']},
   {name:'Seu Bento',look:{hair:'careca',hc:0,skin:2,gi:4,belt:1},x:80*T+8,y:87*T+12,dir:0,tm:2,lines:['Sabia que dá para nadar no rio e nos lagos? É só entrar na água!','No rio vivem o Barbatino, um peixinho veloz, e a Estrelinha, bem rara. Nade até eles para batalhar!','Essa horta é de todo mundo! Plante sementes na terra marrom.','Corte o mato alto para achar sementes.','Quando a cenoura aparece laranjinha, pode colher!']},
-  {name:'Nina',look:{hair:'chama',hc:5,skin:0,gi:3,belt:4},x:83*T+8,y:81*T+12,dir:0,tm:1.5,lines:['Na estrada da caverna tem uma torre altíssima, a Torre dos Ventos! Dizem que lá em cima vive um monstrinho lendário...','Ao norte da vila tem um vulcão de verdade! Lá dentro vivem a Fagulha e o Magmito, e a Lara comanda o Ginásio de Fogo.','Do outro lado da vila tem a Caverna das Pedras! Lá dentro é escuro, tem morcegos e o Ginásio de Pedra do Rocco.','Tem um Ginásio de Água na beira do rio! A Líder Marina é fortíssima. Leve monstrinhos de Planta ou Raio!','Seus monstrinhos se machucaram? O Centro de Cura de telhado rosa cuida deles de graça!','Fogo vence Planta, Água vence Fogo, Planta vence Água. Raio é forte contra Água, e Pedra contra Fogo e Raio!','Quanto mais longe da vila, mais fortes são os monstrinhos.','Dizem que 7 Esferas do Dragão estão escondidas nesta ilha!','Quem juntar as 7 chama o Dragão Sagrado, e ele realiza um desejo!','Monstrinhos que treinam bastante evoluem no Nível 12!','Vi um ratinho elétrico amarelo no mato alto. Dizem que é raro!','O radar lá em cima aponta para a Esfera mais perto. À noite elas brilham!']},
+  {name:'Nina',look:{hair:'chama',hc:5,skin:0,gi:3,belt:4},x:83*T+8,y:81*T+12,dir:0,tm:1.5,lines:['Perto do vulcão tem a Arena do Campeão. Só entra quem tem as 4 insígnias! O Campeão Zeno é o mais forte da ilha.','Na estrada da caverna tem uma torre altíssima, a Torre dos Ventos! Dizem que lá em cima vive um monstrinho lendário...','Ao norte da vila tem um vulcão de verdade! Lá dentro vivem a Fagulha e o Magmito, e a Lara comanda o Ginásio de Fogo.','Do outro lado da vila tem a Caverna das Pedras! Lá dentro é escuro, tem morcegos e o Ginásio de Pedra do Rocco.','Tem um Ginásio de Água na beira do rio! A Líder Marina é fortíssima. Leve monstrinhos de Planta ou Raio!','Seus monstrinhos se machucaram? O Centro de Cura de telhado rosa cuida deles de graça!','Fogo vence Planta, Água vence Fogo, Planta vence Água. Raio é forte contra Água, e Pedra contra Fogo e Raio!','Quanto mais longe da vila, mais fortes são os monstrinhos.','Dizem que 7 Esferas do Dragão estão escondidas nesta ilha!','Quem juntar as 7 chama o Dragão Sagrado, e ele realiza um desejo!','Monstrinhos que treinam bastante evoluem no Nível 12!','Vi um ratinho elétrico amarelo no mato alto. Dizem que é raro!','O radar lá em cima aponta para a Esfera mais perto. À noite elas brilham!']},
 ];}
 function newPlayer(x,y){return {x,y,dir:0,step:0,anim:0,moving:false,running:false,ki:100,punch:0,look:S.look};}
 const heroLook=()=>S.gold?Object.assign({},S.look,{hc:1}):S.look;
@@ -1078,6 +1100,7 @@ function act(){const pl=S.player;if(!pl)return;if(S.room)return actRoom();pl.pun
       if(k==='loja')return openShop();
       if(k==='casa'||k==='vovo'||k==='ginasio'||k==='ginasio2'||k==='ginasio3')return enterRoom(k,b);
       if(k==='torre')return enterRoom('ginasio4',b);
+      if(k==='arena'){const n=GYMS.filter(G=>S.badges&&S.badges[G.id]).length;if(n<GYMS.length){sfx('nope');say('A Arena do Campeão só abre para quem tem as 4 insígnias! Você tem '+n+' de 4. Veja no MENU quais faltam.',5);return;}return enterRoom('arena',b);}
       if(k==='caverna')return enterCave(b,'caverna');
       if(k==='vulcao')return enterCave(b,'vulcao');
       if(k==='cura'){if(!S.team.length){say('Centro de Cura: aqui os monstrinhos descansam e se curam.');return;}
@@ -1157,7 +1180,7 @@ function updateHUD(){const pl=S.player;if(!pl)return;$('kiFill').style.width=pl.
   if(S.cave){$('radarArrow').hidden=true;$('radarDist').textContent=S.cave.kind==='vulcao'?'No vulcão':'Na caverna';}
   else if(best){$('radarArrow').hidden=false;$('radarArrow').style.transform='rotate('+Math.atan2(best.y*T+8-pl.y,best.x*T+8-pl.x)+'rad)';$('radarDist').textContent=Math.round(bd/T)+' passos';}
   else{$('radarArrow').hidden=true;$('radarDist').textContent='Todas!';}
-  updateOnlineUI();drawMinimap();
+  updateOnlineUI();drawMinimap();$('hudName').textContent=(S.champion?'👑 ':'')+S.name;
   const L=S.team[0];$('lead').hidden=!L;
   if(L){const u=monURL(L.sp);if($('leadImg').getAttribute('src')!==u)$('leadImg').src=u;$('leadTxt').textContent=nm(L)+' Nv '+L.lvl;
     const p=Math.max(0,L.hp)/maxHp(L);$('leadHp').style.width=(p*100)+'%';$('leadHp').className=p<.25?'low':p<.5?'mid':'';}}
@@ -1226,7 +1249,7 @@ function render(){
     for(const [e,k] of peerEnts())addE(e,k);}
   for(let ty=y0;ty<=Math.min(WH-1,y1+4);ty++){
     if(ty<=y1+2)for(let tx=x0;tx<=x1;tx++){const o=W.obj[idx(tx,ty)];if(o&&o!==OB.BLD)drawObj(o,tx,ty,cx,cy);}
-    for(const b of W.blds)if(b.y+b.h-1===ty){const im=b.kind==='ginasio'?gymSpr():b.kind==='ginasio2'?gym2Spr():b.kind==='caverna'?caveSpr():b.kind==='vulcao'?volcSpr():b.kind==='ginasio3'?gym3Spr():b.kind==='torre'?towerSpr():bldSpr(b,S.dk>.15);
+    for(const b of W.blds)if(b.y+b.h-1===ty){const im=b.kind==='ginasio'?gymSpr():b.kind==='ginasio2'?gym2Spr():b.kind==='caverna'?caveSpr():b.kind==='vulcao'?volcSpr():b.kind==='ginasio3'?gym3Spr():b.kind==='torre'?towerSpr():b.kind==='arena'?arenaSpr():bldSpr(b,S.dk>.15);
       ctx.drawImage(im,b.x*T-cx,(b.y+b.h)*T-im.height-cy);}
     const list=rows.get(ty);if(list){list.sort((a,b)=>a[0].y-b[0].y);for(const [e,k] of list)drawEnt(e,k,cx,cy);}}
   ctx.font='8px "Press Start 2P", monospace';ctx.textAlign='center';
@@ -1273,6 +1296,7 @@ function renderRoom(){const R=ROOMDEF[S.room.kind],[ox,oy]=roomOrigin(),night=is
   ctx.fillStyle='#0f0c1e';ctx.fillRect(0,0,VW,VH);
   const dr=R.door||[4,5],wf=Math.floor(S.time*2)%4;
   for(let ty=0;ty<R.h;ty++)for(let tx=0;tx<R.w;tx++){const x=ox+tx*T,y=oy+ty*T,door=ty===R.h-1&&dr.includes(tx);
+    if(R.carpet&&(tx===5||tx===6)&&ty>=3&&ty<R.h-1){ctx.fillStyle='#c0302a';ctx.fillRect(x,y,16,16);ctx.fillStyle='#ffd83a';ctx.fillRect(tx===5?x:x+14,y,2,16);ctx.fillStyle='#e8453c';ctx.fillRect(x+(tx===5?4:2),y+((ty*5)%12),10,1);continue;}
     if(inPool(R,tx,ty)&&R.sky){ctx.fillStyle='#9fdcff';ctx.fillRect(x,y,16,16);ctx.fillStyle='#ffffff';const o=Math.floor(S.time*8+tx*23+ty*41)%40;ctx.fillRect(x+(o%16),y+((ty*5)%12),6,2);ctx.fillRect(x+((o+9)%14),y+((tx*7)%13),4,1);
       ctx.fillStyle='#6aa8d8';if(ty===R.pool[1])ctx.fillRect(x,y,16,2);if(ty===R.pool[3])ctx.fillRect(x,y+14,16,2);if(tx===R.pool[0])ctx.fillRect(x,y,2,16);if(tx===R.pool[2])ctx.fillRect(x+14,y,2,16);continue;}
     if(inPool(R,tx,ty)&&R.lava){ctx.drawImage(tileSpr(TL.LAVA,(tx+ty)%4,wf),x,y);ctx.fillStyle='#2a1210';if(ty===R.pool[1])ctx.fillRect(x,y,16,2);if(ty===R.pool[3])ctx.fillRect(x,y+14,16,2);if(tx===R.pool[0])ctx.fillRect(x,y,2,16);if(tx===R.pool[2])ctx.fillRect(x+14,y,2,16);continue;}
@@ -1306,7 +1330,7 @@ function renderRoom(){const R=ROOMDEF[S.room.kind],[ox,oy]=roomOrigin(),night=is
   ctx.globalAlpha=1;}
 function enterRoom(kind,b){S.room={kind,wx:(b.x+Math.floor(b.w/2))*T+8,wy:(b.y+b.h)*T+12};if(kind==='casa'&&!S.furn)S.furn=DEFAULT_HOME();
   const R=ROOMDEF[kind],dr=R.door||[4,5],pl=S.player;pl.x=(dr[0]+1)*T;pl.y=(R.h-2)*T+14;pl.dir=1;pl.swim=false;S.parts=[];S.fade=.7;sfx('talk');
-  say(kind==='casa'?'Sua casa! Durma na cama, guarde monstrinhos no baú e faça móveis na bancada.':kind==='ginasio'?'Ginásio de Água! A Líder Marina te espera do outro lado da piscina.':kind==='ginasio2'?'Ginásio de Pedra! O Líder Rocco te espera atrás das rochas.':kind==='ginasio3'?'Ginásio de Fogo! A Líder Lara te espera do outro lado da lava.':kind==='ginasio4'?'Torre dos Ventos! Cuidado com a abertura para o céu. A Líder Brisa te espera lá no alto.':'Casa da Vovó Tuca. Que cheirinho bom vem do fogão!',4.5);}
+  say(kind==='casa'?'Sua casa! Durma na cama, guarde monstrinhos no baú e faça móveis na bancada.':kind==='ginasio'?'Ginásio de Água! A Líder Marina te espera do outro lado da piscina.':kind==='ginasio2'?'Ginásio de Pedra! O Líder Rocco te espera atrás das rochas.':kind==='ginasio3'?'Ginásio de Fogo! A Líder Lara te espera do outro lado da lava.':kind==='arena'?'Arena do Campeão! O tapete vermelho leva até o Campeão Zeno. Boa sorte!':kind==='ginasio4'?'Torre dos Ventos! Cuidado com a abertura para o céu. A Líder Brisa te espera lá no alto.':'Casa da Vovó Tuca. Que cheirinho bom vem do fogão!',4.5);}
 function exitRoom(){const r=S.room;S.room=null;S.placing=null;S.parts=[];const pl=S.player;pl.x=r.wx;pl.y=r.wy;pl.dir=0;S.pet.px=pl.x;S.pet.py=pl.y+2;S.fade=.7;S.battleCD=2;sfx('talk');save();}
 function canPlace(tx,ty){const R=ROOMDEF.casa,h=FURN[S.placing].h||1,pl=S.player;
   if(tx<1||tx>R.w-2||ty<2||ty+h-1>R.h-2)return false;
@@ -1326,6 +1350,8 @@ function actRoom(){const pl=S.player,v=DIRV[pl.dir],tx=Math.floor((pl.x+v[0]*12)
     case 'lider2':return gymTalk(GYM2);
     case 'lider3':return gymTalk(GYM3);
     case 'lider4':return gymTalk(GYM4);
+    case 'campeao':return gymTalk(CHAMP);
+    case 'placa':say(S.champion?'Hall da Fama: '+S.champion.name+' virou Campeão da Ilha no Dia '+S.champion.day+'!':'Hall da Fama: ainda vazio... Será que você vai ser o primeiro Campeão da Ilha?',5);return;
     case 'catavento':say('O catavento gira sem parar. Aqui em cima venta muito!');return;
     case 'orbe':return orbeTalk();
     case 'fogueira':say('Uma fogueira sempre acesa. Aqui dentro faz muito calor!');return;
@@ -1432,7 +1458,12 @@ function drawBattle(){const g=bctx,n=B.night;g.imageSmoothingEnabled=false;
   if(n){for(let k=0;k<26;k++){g.globalAlpha=.4+.6*Math.abs(Math.sin(S.time*2+k));g.fillStyle='#fff6c0';g.fillRect(hash2(k,1,5)*200|0,hash2(k,2,5)*34|0,1,1);}g.globalAlpha=1;ell(g,28,14,6,6,'#f2ecff');ell(g,31,12,5,5,'#1d1a48');}
   else ell(g,28,14,7,7,'#ffe27a');
   g.fillStyle=n?'#23452e':'#4f9c43';for(let x=0;x<200;x++){const h=Math.round(9+Math.sin(x*.05)*5+Math.sin(x*.13+1)*3);g.fillRect(x,62-h,1,h);}
-  if(B.skybg){g.fillStyle='#8fd0ff';g.fillRect(0,0,200,120);g.fillStyle='#bfe6ff';g.fillRect(0,40,200,80);
+  if(B.arenabg){const gr=g.createLinearGradient(0,0,0,62);gr.addColorStop(0,'#ff9a5a');gr.addColorStop(1,'#ffd27a');g.fillStyle=gr;g.fillRect(0,0,200,62);
+    g.fillStyle='#b8862a';g.fillRect(0,30,200,32);const cs=['#e8453c','#4aa8ff','#5cc25a','#ffd83a','#b08aff','#fff'];
+    for(let y=33;y<60;y+=5)for(let x=(y%2)*3;x<200;x+=6){g.fillStyle=cs[(x*7+y*3)%cs.length];g.fillRect(x,y+(Math.sin(S.time*6+x)>.7?-1:0),2,2);}
+    g.fillStyle='#e8d4a0';g.fillRect(0,62,200,58);g.fillStyle='#dcc690';for(let y=66;y<120;y+=8)g.fillRect(0,y,200,2);
+    ell(g,145,55,32,8,'#b8862a');ell(g,145,54,29,6,'#ffd83a');ell(g,64,107,40,9,'#b8862a');ell(g,64,106,37,7,'#ffd83a');}
+  else if(B.skybg){g.fillStyle='#8fd0ff';g.fillRect(0,0,200,120);g.fillStyle='#bfe6ff';g.fillRect(0,40,200,80);
     for(let k=0;k<7;k++){const x=((hash2(k,9,3)*260+S.time*(6+k*2))%260)-40,y=10+hash2(k,8,3)*90;g.fillStyle='rgba(255,255,255,.9)';g.fillRect(x|0,y|0,30,6);g.fillRect((x+6)|0,(y-3)|0,16,4);}
     ell(g,145,55,34,9,'#ffffff');ell(g,145,53,30,6,'#eef6ff');ell(g,64,107,42,10,'#ffffff');ell(g,64,105,38,7,'#eef6ff');}
   else if(B.lavabg){g.fillStyle='#2a1010';g.fillRect(0,0,200,62);g.fillStyle='#4a1a12';g.fillRect(0,40,200,22);
@@ -1587,11 +1618,17 @@ async function runAway(){B.busy=true;setMenu([]);await msg(B.trainer?'Você desi
 function startTrainerBattle(tr){if(S.mode!=='play'||B)return;
   S.mode='battle';for(const k in keys)keys[k]=false;joy.x=joy.y=0;touchRun=false;setPlayUI(false);
   const mk=()=>({lunge:0,flash:0,alpha:0,drop:0,scale:1}),team=tr.team.map(([id,l])=>makeInst(id,l));for(const m of team)S.seen[m.sp]=true;
-  B={wm:null,aqua:tr.id==='agua',cavebg:tr.id==='pedra',lavabg:tr.id==='fogo',skybg:tr.id==='ar',trainer:Object.assign({},tr,{team,idx:0}),wild:team[0],mi:S.team.findIndex(t=>t.hp>0),tw:[],parts:[],A:{me:mk(),en:mk()},beam:0,proj:null,cap:null,busy:true,skip:false,night:false};
+  B={wm:null,arenabg:tr.id==='campeao',aqua:tr.id==='agua',cavebg:tr.id==='pedra',lavabg:tr.id==='fogo',skybg:tr.id==='ar',trainer:Object.assign({},tr,{team,idx:0}),wild:team[0],mi:S.team.findIndex(t=>t.hp>0),tw:[],parts:[],A:{me:mk(),en:mk()},beam:0,proj:null,cap:null,busy:true,skip:false,night:false};
   $('battle').hidden=false;$('bmenu').textContent='';updateInfo();trainerIntro();}
 async function trainerIntro(){const t=B.trainer;sfx('meet');await msg(t.name+', '+t.title+', aceitou o seu desafio!',1400);
   await tween(350,k=>B.A.en.alpha=k);await msg(t.name+' chamou '+nm(B.wild)+'!',900);await tween(300,k=>B.A.me.alpha=k);await msg('Vai, '+nm(me())+'!',800);mainMenu();}
-async function gymWin(){const t=B.trainer,first=!(S.badges&&S.badges[t.id]);S.badges=S.badges||{};S.badges[t.id]=true;sfx('ball');burstB(64,78,'#ffd83a',30);burstB(145,36,'#4aa8ff',20);
+async function gymWin(){const t=B.trainer,first=!(S.badges&&S.badges[t.id]);
+  if(t.id==='campeao'){S.badges=S.badges||{};S.badges.campeao=true;sfx('ball');for(const c of ['#ffd83a','#e8453c','#4aa8ff','#5cc25a','#b08aff'])burstB(100,50,c,16);
+    await msg('VOCÊ VENCEU O CAMPEÃO ZENO!!!',1800);sfx('day');burstB(64,78,'#ffd83a',30);
+    if(first){S.champion={name:String(S.name).slice(0,12),day:S.day};give('super',10);give('pocao',5);
+      await msg('PARABÉNS! '+S.name+' agora é o CAMPEÃO DA ILHA! 👑',2600);await msg('Seu nome foi para o Hall da Fama! E você ganhou 10 Super Cápsulas e 5 Poções!',2600);}
+    else{give('super',3);await msg('Revanche vencida! Você continua Campeão da Ilha! Ganhou 3 Super Cápsulas.',2400);}
+    return;}S.badges=S.badges||{};S.badges[t.id]=true;sfx('ball');burstB(64,78,'#ffd83a',30);burstB(145,36,'#4aa8ff',20);
   await msg('Você venceu '+(t.art||'a')+' '+t.name+'!',1400);
   if(first){give('super',3);give('pocao',3);await msg('Você ganhou a '+t.badge+'! E também 3 Super Cápsulas e 3 Poções!',2600);}
   else{give('super',1);await msg('Revanche vencida! Você ganhou 1 Super Cápsula.',2000);}}
@@ -1601,7 +1638,7 @@ function orbeTalk(){if(!S.team.some(t=>t.hp>0)){say('Seus monstrinhos estão can
 function gymTalk(G){const first=!(S.badges&&S.badges[G.id]);
   if(!S.team.some(t=>t.hp>0)){say(G.name+': Seus monstrinhos estão cansados! Cure todos no Centro de Cura e volte.',4);return;}
   showInvite(G.name+', '+G.title,first?(G.intro||'Olá! Eu sou a Marina. Meus monstrinhos de Água são fortes como uma cachoeira! Vença os meus 3 monstrinhos e ganhe a '+G.badge+'. Dica: Planta e Raio são ótimos contra Água!')
-      :'Você já tem a '+G.badge+'! Quer uma revanche? Estou ainda mais forte!',
+      :(G.rematch||'Você já tem a '+G.badge+'! Quer uma revanche? Estou ainda mais forte!'),
     [['Agora não',()=>{hideInvite();}],['Aceitar desafio!',()=>{hideInvite();startTrainerBattle(G);},1]]);sfx('talk');}
 function endBattle(res){if(!B)return;const wm=B.wm;$('battle').hidden=true;
   if(res==='run'){if(wm)wm.tm=0;S.battleCD=3;}else{if(wm)S.mons=S.mons.filter(m=>m!==wm);S.battleCD=1.5;}
@@ -1755,7 +1792,7 @@ function buildFriends(){const box=$('friendsBox');box.hidden=S.slot!=='familia';
   for(const p of fs){const q=p.presence,r=document.createElement('div');r.className='trow';const im=document.createElement('img');im.alt='';
     im.src=typeof q.m==='string'&&SPM[q.m]?monURL(q.m):heroSpr(peerLook(q),0,0).toDataURL();
     const mid=document.createElement('div'),s=document.createElement('strong'),sm=document.createElement('small');s.textContent=String(q.n).slice(0,12);
-    const where=!inMyWorld(p)?(q.w===FAMILY_SEED+1?'Está na Caverna das Pedras.':q.w===FAMILY_SEED+2?'Está no Vulcão.':q.w===FAMILY_SEED?'Está lá fora, na ilha.':'Está em outro mundo (jogo solo).'):q.r==='ginasio'||q.r==='ginasio2'||q.r==='ginasio3'||q.r==='ginasio4'?'Está num ginásio!':q.b===1?'Está batalhando!':q.r==='casa'?'Está dentro de casa.':q.r==='vovo'?'Está na casa da Vovó.':q.sw===1?'Está nadando.':'Explorando a ilha.';
+    const where=!inMyWorld(p)?(q.w===FAMILY_SEED+1?'Está na Caverna das Pedras.':q.w===FAMILY_SEED+2?'Está no Vulcão.':q.w===FAMILY_SEED?'Está lá fora, na ilha.':'Está em outro mundo (jogo solo).'):q.r==='ginasio'||q.r==='ginasio2'||q.r==='ginasio3'||q.r==='ginasio4'?'Está num ginásio!':q.r==='arena'?'Está na Arena do Campeão!':q.b===1?'Está batalhando!':q.r==='casa'?'Está dentro de casa.':q.r==='vovo'?'Está na casa da Vovó.':q.sw===1?'Está nadando.':'Explorando a ilha.';
     sm.textContent=where+(typeof q.m==='string'&&SPM[q.m]?' Líder: '+SPM[q.m].n+' Nv '+(Number(q.ml)|0)+'.':'');mid.append(s,sm);r.append(im,mid);
     if(inMyWorld(p)){const bx=document.createElement('div');bx.className='row-btns';
       const mk=(t,fn)=>{const b=document.createElement('button');b.type='button';b.textContent=t;b.onclick=fn;bx.append(b);};
@@ -1768,7 +1805,7 @@ function buildFriends(){const box=$('friendsBox');box.hidden=S.slot!=='familia';
 const MM_COL=['#2456a8','#3f93e6','#ecd697','#5cb247','#3a8438','#caa46e','#8d8aa0','#7b5232','#a8703d','#5e5668','#1c1826','#e8d8a0','#4e4448','#ff6a2a','#2a1c1c'];
 let mmBase=null,mmSeed=null;
 const MM_MARK={ginasio:['#4aa8ff','Ginásio de Água','agua'],caverna:['#b0aabe','Caverna','pedra'],ginasio2:['#b0aabe','Ginásio de Pedra','pedra'],
-  vulcao:['#ff6a2a','Vulcão','fogo'],torre:['#dff2ff','Torre dos Ventos','ar'],ginasio3:['#ff6a2a','Ginásio de Fogo','fogo']};
+  vulcao:['#ff6a2a','Vulcão','fogo'],torre:['#dff2ff','Torre dos Ventos','ar'],arena:['#ffd83a','Arena do Campeão','campeao'],ginasio3:['#ff6a2a','Ginásio de Fogo','fogo']};
 function minimapBase(){if(mmBase&&mmSeed===W.seed)return mmBase;const c=document.createElement('canvas');c.width=WW;c.height=WH;const g=c.getContext('2d'),im=g.createImageData(WW,WH);
   for(let i=0;i<WW*WH;i++){let col=MM_COL[W.tile[i]]||'#000';const o=W.obj[i];if(o===OB.BLD)col='#d6453d';else if(o===OB.TREE||o===OB.PINE||o===OB.FRUIT)col='#2d6e30';
     const n=parseInt(col.slice(1),16);im.data[i*4]=n>>16;im.data[i*4+1]=n>>8&255;im.data[i*4+2]=n&255;im.data[i*4+3]=255;}
@@ -1930,7 +1967,7 @@ function drawPet(e,cx,cy){const sx=Math.round(e.x-cx),sy=Math.round(e.y-cy),img=
 function toB64(u8){let s='';for(let i=0;i<u8.length;i+=8192)s+=String.fromCharCode.apply(null,u8.subarray(i,i+8192));return btoa(s);}
 function fromB64(b){const s=atob(b),u=new Uint8Array(s.length);for(let i=0;i<s.length;i++)u[i]=s.charCodeAt(i);return u;}
 function save(){if(!W||!S.player)return false;const MW=mainW();try{localStorage.setItem(S.slot==='familia'?KEY_FAM:KEY,JSON.stringify({v:1,seed:MW.seed,name:S.name,look:S.look,x:S.cave?S.cave.wx:S.room?S.room.wx:S.player.x,y:S.cave?S.cave.wy:S.room?S.room.wy:S.player.y,
-  music:S.music,gold:S.gold,badges:S.badges,furn:S.furn,furnInv:S.furnInv,giftDay:S.giftDay,wishes:S.wishes,swimTip:S.swimTip,dir:S.player.dir,ki:S.player.ki,inv:S.inv,t:S.t,day:S.day,balls:MW.balls,seen:S.seen,team:S.team,box:S.box,caught:S.caught,sound:S.sound,obj:toB64(MW.obj),data:toB64(MW.data)}));return true;}catch(e){return false;}}
+  music:S.music,gold:S.gold,badges:S.badges,champion:S.champion||null,furn:S.furn,furnInv:S.furnInv,giftDay:S.giftDay,wishes:S.wishes,swimTip:S.swimTip,dir:S.player.dir,ki:S.player.ki,inv:S.inv,t:S.t,day:S.day,balls:MW.balls,seen:S.seen,team:S.team,box:S.box,caught:S.caught,sound:S.sound,obj:toB64(MW.obj),data:toB64(MW.data)}));return true;}catch(e){return false;}}
 function loadSave(slot){try{const s=localStorage.getItem(slot==='familia'?KEY_FAM:KEY);return s?JSON.parse(s):null;}catch(e){return null;}}
 
 /* ---------- flow ---------- */
@@ -1939,12 +1976,12 @@ if(isTouch)document.body.classList.add('touch');
 function showOnly(id){for(const s of ['title','creator','pause','shop','starter','invite','trade'])$(s).hidden=s!==id;}
 function setPlayUI(on){$('hud').hidden=!on;$('hotbar').hidden=!on;$('touch').hidden=!(on&&isTouch);updateOnlineUI();}
 function enterPlay(){S.pet={px:S.player.x,py:S.player.y+2,mv:0,face:1};S.emote=null;S.mode='play';S.mons=[];S.parts=[];S.flies=[];S.npcs=makeNPCs();showOnly(null);setPlayUI(true);$('hudName').textContent=S.name;renderHotbar();updateHUD();if(document.activeElement)document.activeElement.blur();}
-function startNew(){const seed=S.slot==='familia'?FAMILY_SEED:(Math.random()*1e9)|0;W=genWorld(seed);WORLD=W;S.cave=null;S.inv={semente:5,maca:2};S.t=.0625;S.day=1;S.seen={};S.team=[];S.box=[];S.caught={};S.badges={};S.gold=false;S.furn=null;S.furnInv={};S.giftDay=0;S.wishes=0;S.swimTip=false;S.player=newPlayer(80*T+8,82*T+12);enterPlay();
+function startNew(){const seed=S.slot==='familia'?FAMILY_SEED:(Math.random()*1e9)|0;W=genWorld(seed);WORLD=W;S.cave=null;S.inv={semente:5,maca:2};S.t=.0625;S.day=1;S.seen={};S.team=[];S.box=[];S.caught={};S.badges={};S.champion=null;S.gold=false;S.furn=null;S.furnInv={};S.giftDay=0;S.wishes=0;S.swimTip=false;S.player=newPlayer(80*T+8,82*T+12);enterPlay();
   save();showStarter();}
-function continueGame(d,slot){S.slot=slot||'solo';try{W=genWorld(d.seed);W.obj=fromB64(d.obj);W.data=fromB64(d.data);W.balls=d.balls;stampGym(W);stampCave(W);stampVolcano(W);stampTower(W);WORLD=W;S.cave=null;}catch(e){say('Não deu para abrir o jogo salvo. Comece um novo jogo.');return;}
+function continueGame(d,slot){S.slot=slot||'solo';try{W=genWorld(d.seed);W.obj=fromB64(d.obj);W.data=fromB64(d.data);W.balls=d.balls;stampGym(W);stampCave(W);stampVolcano(W);stampTower(W);stampArena(W);WORLD=W;S.cave=null;}catch(e){say('Não deu para abrir o jogo salvo. Comece um novo jogo.');return;}
   S.inv=d.inv||{};S.t=d.t||0;S.day=d.day||1;S.name=d.name||'Guerreiro';S.look=d.look||S.look;S.seen=d.seen||{};S.sound=d.sound!==false;
   S.team=Array.isArray(d.team)?d.team:[];S.box=Array.isArray(d.box)?d.box:[];S.caught=d.caught||{};
-  S.music=d.music!==false;S.gold=!!d.gold;S.badges=d.badges||{};S.furn=Array.isArray(d.furn)?d.furn:null;S.furnInv=d.furnInv||{};S.giftDay=d.giftDay||0;S.wishes=d.wishes||0;S.swimTip=!!d.swimTip;
+  S.music=d.music!==false;S.gold=!!d.gold;S.badges=d.badges||{};S.champion=d.champion||null;S.furn=Array.isArray(d.furn)?d.furn:null;S.furnInv=d.furnInv||{};S.giftDay=d.giftDay||0;S.wishes=d.wishes||0;S.swimTip=!!d.swimTip;
   if(MUS.gain)MUS.gain.gain.value=S.music?1:0;
   for(const m of S.team)evolveNow(m);
   S.player=newPlayer(d.x,d.y);S.player.dir=d.dir||0;S.player.ki=d.ki==null?100:d.ki;enterPlay();
@@ -1953,7 +1990,7 @@ function continueGame(d,slot){S.slot=slot||'solo';try{W=genWorld(d.seed);W.obj=f
 function toTitle(){if(S.cave){W=WORLD;S.cave=null;}B=null;$('battle').hidden=true;$('wish').hidden=true;S.dragon=null;S.room=null;S.placing=null;S.dragonPending=0;S.mode='title';setPlayUI(false);showOnly('title');const d=loadSave('solo');$('btnContinue').hidden=!d;
   $('btnFamily').textContent=loadSave('familia')?'Entrar no Mundo da Família':'Mundo da Família (novo)';$('btnNew').textContent='Novo jogo';$('btnNew').classList.remove('warn');$('newWarn').hidden=true;newArmed=false;S.mons=[];S.parts=[];S.npcs=makeNPCs();}
 function pause(){if(S.mode!=='play')return;S.mode='pause';S.placing=null;save();buildFriends();buildDex();buildTeam();
-  {const got=GYMS.filter(G=>S.badges&&S.badges[G.id]).map(G=>'🏅 '+G.badge+' ('+G.name+')');$('badgeList').textContent=got.length?got.join(' · ')+(got.length<GYMS.length?' · Falta: '+GYMS.filter(G=>!(S.badges&&S.badges[G.id])).map(G=>G.badge+' ('+G.name+')').join(', '):' · Todas conquistadas!'):'Nenhuma ainda. Desafie a Marina (Ginásio de Água, na beira do rio), o Rocco (Ginásio de Pedra, na caverna) a Lara (Ginásio de Fogo, no vulcão) e a Brisa (Torre dos Ventos)!';}$('talkPanel').hidden=true;$('btnSound').textContent='Som: '+(S.sound?'ligado':'desligado');$('btnMusic').textContent='Música: '+(S.music?'ligada':'desligada');showOnly('pause');$('touch').hidden=true;joy.x=joy.y=0;touchRun=false;for(const k in keys)keys[k]=false;}
+  {const got=GYMS.filter(G=>S.badges&&S.badges[G.id]).map(G=>'🏅 '+G.badge+' ('+G.name+')');if(S.champion)got.unshift('👑 Campeão da Ilha');$('badgeList').textContent=got.length?got.join(' · ')+(got.length<GYMS.length?' · Falta: '+GYMS.filter(G=>!(S.badges&&S.badges[G.id])).map(G=>G.badge+' ('+G.name+')').join(', '):(S.champion?' · Todas conquistadas!':' · Todas conquistadas! Agora desafie o Campeão Zeno na Arena, perto do vulcão!')):'Nenhuma ainda. Desafie a Marina (Ginásio de Água, na beira do rio), o Rocco (Ginásio de Pedra, na caverna) a Lara (Ginásio de Fogo, no vulcão) e a Brisa (Torre dos Ventos)!';}$('talkPanel').hidden=true;$('btnSound').textContent='Som: '+(S.sound?'ligado':'desligado');$('btnMusic').textContent='Música: '+(S.music?'ligada':'desligada');showOnly('pause');$('touch').hidden=true;joy.x=joy.y=0;touchRun=false;for(const k in keys)keys[k]=false;}
 function resume(){S.mode='play';showOnly(null);setPlayUI(true);if(document.activeElement)document.activeElement.blur();}
 function buildDex(){const el=$('dex');el.textContent='';let n=0;
   let c=0;
@@ -2043,6 +2080,6 @@ function frame(now){const dt=Math.min(.05,(now-last)/1000);last=now;S.time+=dt;
   nextFrame(frame);}
 const nextFrame=/debugloop/.test(location.search)?(f=>setTimeout(()=>f(performance.now()),33)):(f=>requestAnimationFrame(f));
 nextFrame(frame);
-if(/debug/.test(location.search))window.__g={S,get W(){return W;},get B(){return B;},act,save,growTick,idx,OB,TL,T,startBattle,makeInst,maxHp,SPECIES,startDragon,collectBall,startTrainerBattle,GYM,GYM2,GYM3,GYM4,enterCave,exitCave,get WORLD(){return WORLD;},MUS,get AC(){return AC;},setPeers:a=>{PEERS=a;updateOnlineUI();},setRoom:r=>{ROOM=r;netOn=!!r;updateOnlineUI();},invite:(peer,k)=>{const p=friends().find(x=>x.peer===peer);if(p)invite(p,k);},get lastPres(){return lastPres;}};
+if(/debug/.test(location.search))window.__g={S,get W(){return W;},get B(){return B;},act,save,growTick,idx,OB,TL,T,startBattle,makeInst,maxHp,SPECIES,startDragon,collectBall,startTrainerBattle,GYM,GYM2,GYM3,GYM4,CHAMP,enterCave,exitCave,get WORLD(){return WORLD;},MUS,get AC(){return AC;},setPeers:a=>{PEERS=a;updateOnlineUI();},setRoom:r=>{ROOM=r;netOn=!!r;updateOnlineUI();},invite:(peer,k)=>{const p=friends().find(x=>x.peer===peer);if(p)invite(p,k);},get lastPres(){return lastPres;}};
 })();
 </script>
